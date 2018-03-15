@@ -1,8 +1,9 @@
 import pymysql as sql
 import csv
 
-conn = sql.connect('creanza-lab-server.cas.vanderbilt.edu', user='searfoam', password='', use_unicode=True,
-                   charset="utf8")
+fileWithPassword = open('C:/Users/abiga\Documents\GRADUATEWORK\CREANZA_LAB\creanzaLabServer_searfoamPassword.txt', 'r')
+conn = sql.connect('creanza-lab-server.cas.vanderbilt.edu', user='asearfos',
+                   password=fileWithPassword.read().strip(), use_unicode=True, charset="utf8")
 cursor = conn.cursor()
 
 """
