@@ -37,13 +37,10 @@ class SongAnalysis(object):
     def run_analysis(self, filepath):
         # file names
         dirname, basename = os.path.split(filepath)
-        print(basename, "\n")
 
         # load data
         self.onsets, self.offsets, self.threshold_sonogram, self.millisecondsPerPixel, self.hertzPerPixel = \
             self.load_bout_data(dirname, basename)
-        print(self.onsets, "\n", self.offsets, "\n", self.millisecondsPerPixel, "\n", self.hertzPerPixel, "\n",
-              self.threshold_sonogram)
 
         # run analysis
         syllable_durations, num_syllables, bout_stats = self.get_bout_stats()
