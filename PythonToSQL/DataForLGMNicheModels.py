@@ -12,7 +12,7 @@ cursor = conn.cursor()
 
 # EAST
 cursor.execute("select CatalogNo, Latitude, Longitude "
-               "from asearfos.FinalDataCompilation_LatLong "
+               "from asearfos.ChippingSparrows_FinalDataCompilation "
                "where Region = 'east';")
 
 rows = cursor.fetchall()
