@@ -88,3 +88,55 @@ cursor.execute("update asearfos.Chippies_FinalData_AnlaysisOutput "
 conn.commit()
 
 
+"""
+Add compared status from lists of unique, duplicate, and use (compared by hand and noted in excel sheet and exported 
+to lists in .txt files)
+"""
+
+with open("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation"
+          "\PossibleDuplicates_duplicateList.txt", 'r') as duplicateFile:
+    duplicateList = duplicateFile.read()
+
+cursor.execute("update asearfos.Chippies_FinalData_AnlaysisOutput "
+               "set ComparedStatus = 'duplicate' "
+               "where CatalogNo in (%s)" % duplicateList)
+
+with open("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation\PossibleDuplicates_uniqueList"
+          ".txt", 'r') as uniqueFile:
+    uniqueList = uniqueFile.read()
+
+cursor.execute("update asearfos.Chippies_FinalData_AnlaysisOutput "
+               "set ComparedStatus = 'unique' "
+               "where CatalogNo in (%s)" % uniqueList)
+
+with open("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation\PossibleDuplicates_useList.txt"
+          "", 'r') as useFile:
+    useList = useFile.read()
+
+cursor.execute("update asearfos.Chippies_FinalData_AnlaysisOutput "
+               "set ComparedStatus = 'use' "
+               "where CatalogNo in (%s)" % useList)
+
+# update ComparedStatus for 2 CatalogNo's that have two files each (multiple birds)
+cursor.execute("update asearfos.Chippies_FinalData_AnlaysisOutput "
+               "set ComparedStatus = 'unique' "
+               "where CatalogNo = 'XC133534' and FileName like '%bird1%';")
+
+cursor.execute("update asearfos.Chippies_FinalData_AnlaysisOutput "
+               "set ComparedStatus = 'duplicate' "
+               "where CatalogNo = 'XC133534' and FileName like '%bird2%';")
+
+cursor.execute("update asearfos.Chippies_FinalData_AnlaysisOutput "
+               "set ComparedStatus = 'unique' "
+               "where CatalogNo = '29405651' and FileName like '%bird1%';")
+
+cursor.execute("update asearfos.Chippies_FinalData_AnlaysisOutput "
+               "set ComparedStatus = 'use' "
+               "where CatalogNo = '29405651' and FileName like '%bird2%';")
+
+# any remaining ones were unique (did not have two files with same latitude, longitude and year)
+cursor.execute("update asearfos.Chippies_FinalData_AnlaysisOutput "
+               "set ComparedStatus = 'unique' "
+               "where ComparedStatus is NULL")
+
+conn.commit()
