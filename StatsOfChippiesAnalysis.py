@@ -228,7 +228,7 @@ col_to_skip3 = ['Latitude', 'Longitude', 'RecordingMonth', 'RecordingYear', 'Reg
 corrTable_wRegion_norm = corrTable_wRegion.copy()
 for var in corrTable_wRegion_norm.columns:
         if var not in col_to_skip3:
-                corrTable_norm[var] = corrTable_norm[var].apply(np.log)
+                corrTable_wRegion_norm[var] = corrTable_wRegion_norm[var].apply(np.log)
 
 subset_corrTable_wRegion_norm = corrTable_wRegion_norm.copy()
 toss_list3 = ['Latitude', 'Longitude', 'RecordingMonth', 'RecordingYear', 'LargestNoteDuration_ms',
@@ -340,11 +340,94 @@ subset_corrTable_wRegion_norm = subset_corrTable_wRegion_norm.drop(toss_list3, a
 #     e = subset_corrTable_wRegion_norm.loc[subset_corrTable_wRegion_norm['Region'] == 'east', sv]
 #     w = subset_corrTable_wRegion_norm.loc[subset_corrTable_wRegion_norm['Region'] == 'west', sv]
 #     s = subset_corrTable_wRegion_norm.loc[subset_corrTable_wRegion_norm['Region'] == 'south', sv]
-#     print(sv)
-#     print('east vs west', ranksums(e, w))
-#     print('west vs south', ranksums(w, s))
-#     print('south vs east', ranksums(s, e))
-#     print('\n')
+# #     print(sv)
+# #     print('east vs west', ranksums(e, w))
+# #     print('west vs south', ranksums(w, s))
+# #     print('south vs east', ranksums(s, e))
+# #     print('\n')
+# #     print(sv)
+# #     ax = sns.violinplot(x='Region', y=sv, data=subset_corrTable_wRegion_norm[['Region', sv]], inner='stick')
+# #     ax = sns.set_style('white')
+#     fig = plt.figure(figsize=(9, 11))
+#     sns.set(font_scale=2, style='white')
+#     ax = sns.boxplot(x='Region', y=sv, data=subset_corrTable_wRegion_norm[['Region', sv]], color='None', fliersize=0)
+#     ax = sns.stripplot(x='Region', y=sv, data=subset_corrTable_wRegion_norm[['Region', sv]],
+#                        palette=sns.xkcd_palette(['windows blue', 'amber', 'green']), size=7, jitter=True, lw=1)
+#
+#     # Make the boxplot fully transparent
+#     for patch in ax.artists:
+#         r, g, b, a = patch.get_facecolor()
+#         patch.set_facecolor((r, g, b, 0))
+#
+#     # # Calculate number of obs per group & median to position labels
+#     # medians = subset_corrTable_wRegion_norm.groupby(['Region'], sort=False)[sv].median().values
+#     # nobs = subset_corrTable_wRegion_norm.groupby(['Region'], sort=False).size().values
+#     # nobs = [str(x) for x in nobs.tolist()]
+#     # nobs = ["n: " + i for i in nobs]
+#     #
+#     # # Add it to the plot
+#     # pos = range(len(nobs))
+#     # for tick, label in zip(pos, ax.get_xticklabels()):
+#     #     plt.text(pos[tick] - 0.25, medians[tick] + 0.4, nobs[tick], horizontalalignment='center', fontsize=14,
+#     #              color='k', weight='semibold')
+#
+#     # remove border around plot
+#     ax.spines["top"].set_visible(False)
+#     ax.spines["right"].set_visible(False)
+#
+#     # # adjust ticks
+#     # plt.yticks(fontsize=14)
+#     # plt.xticks(fontsize=14)
+#     #
+#     # # axis limits
+#     # plt.ylim(subset_corrTable_wRegion_norm[sv].min(), subset_corrTable_wRegion_norm[sv].max())
+#
+#     ax.yaxis.set_ticks_position('left')
+#     ax.xaxis.set_ticks_position('bottom')
+#     ax.set_title(sv, fontsize=30, y=1.05)
+#     ax.set_ylabel('')
+#     ax.set_xlabel('')
+#
+#     # add bar if significant
+#     if ranksums(e, w)[1] < .001:
+#         x1, x2 = 1, 2  # columns 'Sat' and 'Sun' (first column: 0, see plt.xticks())
+#         # print(subset_corrTable_wRegion_norm[sv].max)
+#         y, h, col = subset_corrTable_wRegion_norm[sv].max() + .05 * subset_corrTable_wRegion_norm[sv].max(), \
+#                     .02 * subset_corrTable_wRegion_norm[sv].max(), 'k'
+#         plt.plot([x1, x1, x2, x2], [y, y + h, y + h, y], lw=1.5, c=col)
+#         plt.text((x1 + x2) * .5, y + h, "*", ha='center', va='bottom', color=col, fontsize=30, weight='semibold')
+#
+#     if ranksums(s, e)[1] < .001:
+#         x1, x2 = 0, 1  # columns 'Sat' and 'Sun' (first column: 0, see plt.xticks())
+#         y, h, col = subset_corrTable_wRegion_norm[sv].max() + .05 * subset_corrTable_wRegion_norm[sv].max(), \
+#                     .02 * subset_corrTable_wRegion_norm[sv].max(), 'k'
+#         plt.plot([x1, x1, x2, x2], [y, y + h, y + h, y], lw=1.5, c=col)
+#         plt.text((x1 + x2) * .5, y + h, "*", ha='center', va='bottom', color=col, fontsize=30, weight='semibold')
+#
+#     if ranksums(s, w)[1] < .001:
+#         x1, x2 = 0, 2  # columns 'Sat' and 'Sun' (first column: 0, see plt.xticks())
+#         y, h, col = subset_corrTable_wRegion_norm[sv].max() + .05 * subset_corrTable_wRegion_norm[sv].max(), \
+#                     .02 * subset_corrTable_wRegion_norm[sv].max(), 'k'
+#         plt.plot([x1, x1, x2, x2], [y, y + h, y + h, y], lw=1.5, c=col)
+#         plt.text((x1 + x2) * .5, y + h, "*", ha='center', va='bottom', color=col, fontsize=30, weight='semibold')
+#
+#     # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots/" + sv + '.pdf')
+#     # plt.tight_layout()
+#     # pdf.savefig(orientation='landsccape')
+#     # pdf.close()
+#
+#     # manager = plt.get_current_fig_manager()
+#     # manager.window.showMaximized()
+#
+#     plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm/" + sv + '.png',
+#                 type='png', dpi=fig.dpi, bbox_inches='tight')
+#
+#
+#     # plt.show()
+#     plt.cla()
+#     plt.clf()
+#     plt.close()
+#
 
 """
 Wilcoxon Ranksums for dawn vs day 
@@ -373,38 +456,45 @@ Wilcoxon Ranksums for dawn vs day
 HEAT MAPS OF SIGNIFICANT FEATURES ON GEOGRAPHICAL MAP
 """
 from mpl_toolkits.basemap import Basemap
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-# set the dimension of the figure
-# my_dpi = 96
-# plt.figure(figsize=(2600/my_dpi, 1800/my_dpi), dpi=my_dpi)
+for songChar in subset_corrTable_wRegion_norm.columns[1:]:
 
-# make the background map
-m = Basemap(llcrnrlat=0, llcrnrlon=-179, urcrnrlat=76, urcrnrlon=-44)
-m.drawcoastlines()
-m.drawcountries(color='gray')
-m.drawmapboundary(fill_color='white')
+    # plt.close('all')
 
-songChar = 'AvgNoteDuration_ms'
-n = m.scatter(corrTable_norm['Longitude'], corrTable_norm['Latitude'], alpha=0.4, c=corrTable_norm[songChar],
-          cmap='seismic', edgecolor='black', lw='1')
+    # Set the dimension of the figure
+    my_dpi = 96
+    fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi)
 
-plt.colorbar(pad=0.004)
-# plt.suptitle(songChar)
+    # make the background map
+    m = Basemap(llcrnrlat=0, llcrnrlon=-179, urcrnrlat=76, urcrnrlon=-44)
+    m.drawcoastlines()
+    m.drawcountries(color='gray')
+    m.drawmapboundary(fill_color='white')
 
-# print(plt.get_backend())
-manager = plt.get_current_fig_manager()
-manager.window.showMaximized()
-plt.show()
+    # songChar = 'AvgNoteDuration_ms'
+    print(subset_corrTable_wRegion_norm[songChar])
+    print(corrTable_norm[songChar])
+    n = m.scatter(corrTable_norm['Longitude'], corrTable_norm['Latitude'], s=80, alpha=0.6, c=corrTable_norm[songChar],
+              cmap='seismic', edgecolor='black', lw='0.5')
 
-# pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/" + songChar + '.pdf')
-#
-# pdf.savefig()
-# pdf.close()
+    divider = make_axes_locatable(plt.gca())
+    cax = divider.append_axes("right", "2%", pad="1%")
+    plt.colorbar(n, cax=cax)
+
+    plt.yticks(fontsize=14)
+    plt.xticks(fontsize=14)
+    # n.set_title(songChar, fontsize=16, y=1.05, ha='center')
 
 
-#
-# n = Basemap(width=12000000, height=9000000, projection='lcc',
-#             resolution='c', lat_1=45., lat_2=55, lat_0=50, lon_0=-107.)
-# n.drawcoastlines()
-# plt.show()
-#
+    plt.tight_layout()
+    #
+    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/" + songChar + '.pdf')
+    #
+    # pdf.savefig(dpi=fig.dpi, orientation='landsccape')
+    # pdf.close()
+
+    plt.show()
+    # plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/GeoPlots/" + songChar + '.png',
+    #             type='png', dpi=fig.dpi, bbox_inches='tight')
+
