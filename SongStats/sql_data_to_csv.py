@@ -101,7 +101,7 @@ for var in corrTable_norm.columns:
 
 save_path = 'C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation' + \
             '/FinalDataframe_CombinedTables_LogTransformed.csv'
-corrTable.to_csv(save_path, sep=',', header=True, index=False)
+corrTable_norm.to_csv(save_path, sep=',', header=True, index=False)
 
 
 
