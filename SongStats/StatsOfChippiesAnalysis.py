@@ -203,7 +203,7 @@ spearman_results = subset_corrTable_norm.corr(method='spearman')
 unique_spearman_results = spearman_results.copy().drop(['Latitude', 'Longitude', 'RecordingMonth', 'RecordingYear'], axis=0).drop(
     spearman_results.columns[4:], axis=1)
 
-# print(unique_spearman_results)
+print(unique_spearman_results)
 
 # plotting correlations
 # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/sixteenSongVar_corr.pdf")
