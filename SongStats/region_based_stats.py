@@ -201,21 +201,74 @@ Binned heatmap showing geographical distribution of data
 # plt.show()
 
 
-my_dpi = 96
-fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi)
-
-# make the background map
-m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
-m.drawcoastlines()
-m.drawcountries(color='gray')
-m.drawmapboundary(fill_color='white', color='none')
-
-m.hexbin(data_for_heatmaps['Longitude'], data_for_heatmaps['Latitude'], mincnt=1, gridsize=50, cmap='jet')
-m.colorbar()
-plt.show()
+# my_dpi = 96
+# fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi)
+#
+# # make the background map
+# m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
+# m.drawcoastlines()
+# m.drawcountries(color='gray')
+# m.drawmapboundary(fill_color='white', color='none')
+#
+# m.hexbin(data_for_heatmaps['Longitude'], data_for_heatmaps['Latitude'], mincnt=1, gridsize=50, cmap='jet')
+# m.colorbar()
+# plt.show()
 
 
 """
 Downsampling of data to check we get the same results - only one random sample from each lat/long
 """
+pd.set_option("display.max_rows", 500)
+# print(data_for_wrs.groupby(['Latitude', 'Longitude']).apply(lambda x: x.sample(1)).reset_index(drop=True))
+
+# # just checking my work
+# print(data_for_wrs.shape)
+# print(data_for_wrs.duplicated(subset=('Latitude', 'Longitude')).sum())
+# print(data_for_wrs.groupby(['Latitude', 'Longitude'], as_index=False).size())
+# print(len(data_for_wrs.groupby(['Latitude', 'Longitude']).apply(lambda x: x.sample(1)).reset_index(drop=True)))
+
+data_for_wrs_rounded = data_for_wrs.round({'Latitude': 3, 'Longitude': 3})
+data_downsampled = data_for_wrs_rounded.groupby(['Latitude', 'Longitude']).apply(lambda x: x.sample(1)).reset_index(drop=True)
+# print(data_downsampled)
+
+# # plot the new geographical spread of subset of data
+# my_dpi = 96
+# fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi)
+#
+# m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
+# m.drawcoastlines()
+# m.drawcountries(color='gray')
+# m.drawmapboundary(fill_color='white', color='none')
+#
+# m.hexbin(data_downsampled['Longitude'], data_downsampled['Latitude'], mincnt=1, gridsize=50, cmap='jet')
+# m.colorbar()
+# plt.show()
+
+ranksums_EW = pd.DataFrame(index=range(1000), columns=[data_for_wrs_rounded.columns[3:]])
+ranksums_ES = pd.DataFrame(index=range(1000), columns=[data_for_wrs_rounded.columns[3:]])
+ranksums_WS = pd.DataFrame(index=range(1000), columns=[data_for_wrs_rounded.columns[3:]])
+for r in range(1000):
+    sample = data_for_wrs_rounded.groupby(['Latitude', 'Longitude']).apply(lambda x: x.sample(1)).reset_index(drop=True)
+
+    for sv in sample.columns[3:]:
+        e = sample.loc[sample['Region'] == 'east', sv]
+        w = sample.loc[sample['Region'] == 'west', sv]
+        s = sample.loc[sample['Region'] == 'south', sv]
+
+        ranksums_EW.iloc[r][sv] = ranksums(e, w)[1]
+        ranksums_ES.iloc[r][sv] = ranksums(e, s)[1]
+        ranksums_WS.iloc[r][sv] = ranksums(w, s)[1]
+
+# print(ranksums_EW)
+print('EW: max\n', ranksums_EW.max(axis=0))
+print('EW: min\n', ranksums_EW.min(axis=0))
+print('ES: max\n', ranksums_ES.max(axis=0))
+print('ES: min\n', ranksums_ES.min(axis=0))
+print('WS: max\n', ranksums_WS.max(axis=0))
+print('WS: min\n', ranksums_WS.min(axis=0))
+
+
+
+
+
 
