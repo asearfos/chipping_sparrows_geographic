@@ -19,9 +19,8 @@ log_song_data = pd.DataFrame.from_csv(data_path, header=0, index_col=None)
 log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['unique', 'use'])].copy().reset_index(
     drop=True)
 
-col_to_skip = ['CatalogNo', 'ComparedStatus', 'RecordingMonth', 'RecordingTime']
+col_to_skip = ['CatalogNo', 'ComparedStatus', 'RecordingDay', 'RecordingMonth', 'RecordingTime']
 data_for_corr = log_song_data_unique.drop(col_to_skip, axis=1)
-
 
 
 """
@@ -35,14 +34,14 @@ Continuous Stats Test on 16 chosen song variables
 #
 # print(unique_spearman_results)
 
-def corrfunc(x, y, **kws):
-    r, p_r = stats.pearsonr(x, y)
-    rho, p_rho = stats.spearmanr(x, y)
-    ax = plt.gca()
-    ax.annotate("r = {:.2f}, p = {:.2f}\nrho = {:.2f}, p = {:.2f}".format(r, p_r, rho, p_rho),
-                xy=(.1, .9), xycoords=ax.transAxes)
-
-# plotting correlations
+# def corrfunc(x, y, **kws):
+#     r, p_r = stats.pearsonr(x, y)
+#     rho, p_rho = stats.spearmanr(x, y)
+#     ax = plt.gca()
+#     ax.annotate("r = {:.2f}, p = {:.2f}\nrho = {:.2f}, p = {:.2f}".format(r, p_r, rho, p_rho),
+#                 xy=(.1, .9), xycoords=ax.transAxes)
+#
+# # plotting correlations
 # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/sixteenSongVar_corr_wReg.pdf")
 # sns.set(style='white')
 # g = sns.pairplot(data=data_for_corr,

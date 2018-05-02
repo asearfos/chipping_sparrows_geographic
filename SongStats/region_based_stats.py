@@ -20,7 +20,7 @@ log_song_data = pd.DataFrame.from_csv(data_path, header=0, index_col=None)
 
 log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['unique', 'use'])].copy().reset_index(
     drop=True)
-col_to_skip = ['CatalogNo', 'ComparedStatus', 'RecordingMonth', 'RecordingYear', 'RecordingTime']
+col_to_skip = ['CatalogNo', 'ComparedStatus', 'RecordingDay', 'RecordingMonth', 'RecordingYear', 'RecordingTime']
 data_subset = log_song_data_unique.drop(col_to_skip, axis=1)
 
 # use only east, west and south data for wilcoxon rank sums

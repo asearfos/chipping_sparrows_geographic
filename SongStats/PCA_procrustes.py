@@ -19,8 +19,7 @@ log_song_data = pd.DataFrame.from_csv(data_path, header=0, index_col=None)
 log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['unique', 'use'])].copy().reset_index(
     drop=True)
 
-col_to_skip = ['CatalogNo', 'ComparedStatus', 'RecordingMonth', 'RecordingYear',
-                'RecordingTime']
+col_to_skip = ['CatalogNo', 'ComparedStatus', 'RecordingDay', 'RecordingMonth', 'RecordingYear', 'RecordingTime']
 data_for_PCA = log_song_data_unique.drop(col_to_skip, axis=1)
 
 """
@@ -67,23 +66,25 @@ finalDf = pd.concat([data_for_PCA[['Region', 'Latitude', 'Longitude']], principa
 stand_latlong, oriented_pcs, disparity = spatial.procrustes(data1=finalDf[['Longitude', 'Latitude']], data2=finalDf[[
     'PC1', 'PC2']])
 print('my disparity: ', disparity)
+# print('mean: ', stand_latlong.mean(0))
+# print('std: ', stand_latlong.std(0))
 oriented_pcs_df = pd.DataFrame(data=oriented_pcs, index=None, columns=['PC1_oriented', 'PC2_oriented'])
 oriented_pcs_df = pd.concat([finalDf[['Region']], oriented_pcs_df], axis=1).copy()
-
-# Plot adjusted PCs to latitude and longitude axes
-sns.set(style='white')
-pca_plot_oriented = sns.lmplot(x='PC1_oriented', y='PC2_oriented', data=oriented_pcs_df, fit_reg=False, hue='Region',
-                      legend_out=False)
-ax = pca_plot_oriented.axes
-ax[0, 0].set_ylabel('PC2', fontsize=50)
-ax[0, 0].set_xlabel('PC1', fontsize=50)
-ax[0, 0].tick_params(labelsize=40)
-leg = pca_plot_oriented.axes[0, 0].get_legend()
-leg.set_title(None)
-labs = leg.texts
-labs[0].set_fontsize(30)
-labs[1].set_fontsize(30)
-plt.show()
+#
+# # Plot adjusted PCs to latitude and longitude axes
+# sns.set(style='white')
+# pca_plot_oriented = sns.lmplot(x='PC1_oriented', y='PC2_oriented', data=oriented_pcs_df, fit_reg=False, hue='Region',
+#                       legend_out=False)
+# ax = pca_plot_oriented.axes
+# ax[0, 0].set_ylabel('PC2', fontsize=50)
+# ax[0, 0].set_xlabel('PC1', fontsize=50)
+# ax[0, 0].tick_params(labelsize=40)
+# leg = pca_plot_oriented.axes[0, 0].get_legend()
+# leg.set_title(None)
+# labs = leg.texts
+# labs[0].set_fontsize(30)
+# labs[1].set_fontsize(30)
+# plt.show()
 
 # # run procrustes 100,000x to get empirical p-value
 # all_disparities = [None]*100000

@@ -53,6 +53,7 @@ items = "`ChippingSparrows_FinalDataCompilation`.`CatalogNo`," \
         "`Chippies_FinalData_AnlaysisOutput`.`ComparedStatus`," \
         "`ChippingSparrows_FinalDataCompilation`.`Latitude`," \
         "`ChippingSparrows_FinalDataCompilation`.`Longitude`," \
+        "`ChippingSparrows_FinalDataCompilation`.`RecordingDay`," \
         "`ChippingSparrows_FinalDataCompilation`.`RecordingMonth`," \
         "`ChippingSparrows_FinalDataCompilation`.`RecordingYear`," \
         "`ChippingSparrows_FinalDataCompilation`.`RecordingTime`," \
@@ -91,8 +92,8 @@ corrTable.to_csv(save_path, sep=',', header=True, index=False)
 
 # log transform (natural log) unless log transform made the data more skewed (JB test - see normality spreadsheet in
 # google docs)
-col_to_skip = ['CatalogNo', 'ComparedStatus', 'Latitude', 'Longitude', 'RecordingMonth', 'RecordingYear',
-                'RecordingTime', 'Region', 'MeanSyllableStereotypy', 'StdNotesFreqModulation_Hz']
+col_to_skip = ['CatalogNo', 'ComparedStatus', 'Latitude', 'Longitude', 'RecordingDay', 'RecordingMonth',
+               'RecordingYear', 'RecordingTime', 'Region', 'MeanSyllableStereotypy', 'StdNotesFreqModulation_Hz']
 
 corrTable_norm = corrTable.copy()
 for var in corrTable_norm.columns:
