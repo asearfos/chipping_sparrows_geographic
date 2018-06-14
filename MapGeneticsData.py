@@ -1,62 +1,66 @@
 import pandas as pd
-import pymysql as sql
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.backends.backend_pdf import PdfPages
 import seaborn as sns; sns.set()
-from scipy import stats
-import datetime
 from mpl_toolkits.basemap import Basemap
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-
+#load in mitochondrial control region data to get locations and number of samples at each location
 Haplo_Locations = pd.read_table("C:/Users/abiga\Box "
                                         "Sync\Abigail_Nicole\ChippiesProject\GeneticData\Mila_ControlRegionSeq"
                                         "\Mila_HaplotypeToLocation_correctedCA_allSamples.txt", delimiter="\t")
 
 Haplo_Locations_wFreq = Haplo_Locations.groupby(['Latitude', 'Longitude']).size().reset_index(name='NumAtLocation')
-print(Haplo_Locations_wFreq)
+print('mtDNA \n', Haplo_Locations_wFreq)
+
+#load in mitochondrial control region data to get locations and number of samples at each location
+COI_Locations = pd.read_table("C:/Users/abiga\Box "
+                                        "Sync\Abigail_Nicole\ChippiesProject\GeneticData\ChippingSparrow_Barcodes_2017"
+                                        "\ChippingSparrow_BarcodesToLocations.txt", delimiter="\t")
+
+COI_Locations_wFreq = COI_Locations.groupby(['Latitude', 'Longitude']).size().reset_index(name='NumAtLocation')
+print('COI \n', COI_Locations_wFreq)
 
 # Set the dimension of the figure
 my_dpi = 96
-fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi)
+fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
 
-# make the background map
-m = Basemap(llcrnrlat=13, llcrnrlon=-128, urcrnrlat=50, urcrnrlon=-62)
-m.drawcoastlines()
-m.drawcountries(color='gray')
-m.drawmapboundary(fill_color='white', color='none')
+#make the geographic background map
+m = Basemap(llcrnrlat=10, llcrnrlon=-128, urcrnrlat=60, urcrnrlon=-62)
+m.drawcoastlines(color='gray')
+m.drawcountries(color='k', linewidth=1)
+m.drawstates(color='gray')
+m.drawmapboundary(fill_color='w', color='none')
 
-# songChar = 'AvgNoteDuration_ms'
-# print(subset_corrTable_wRegion_norm[songChar])
-# print(corrTable_norm[songChar])
+#if you want the water and the land different colors
+# m.fillcontinents(color="#cdc7bd", lake_color='#C5DBED')
+# m.drawmapboundary(fill_color="#C5DBED")
+
+#plot points at sampling locations with area proportional to number of samples at the location --> mtDNA
 m.scatter(Haplo_Locations_wFreq['Longitude'], Haplo_Locations_wFreq['Latitude'], latlon=True,
-          s=100*Haplo_Locations_wFreq['NumAtLocation'], color='k', label=None)
+          s=100*Haplo_Locations_wFreq['NumAtLocation'], label=None, zorder=10, c='#dfc27d', edgecolor='black',
+          linewidth=1)
 
-# for num_samples in [1, 20, 40]:
-#     plt.scatter([], [], c='k', s=10*num_samples, label=str(Haplo_Locations_wFreq))
-# plt.legend(scatterpoints=1, frameon=False, labelspacing=1, title='Number of Samples')
+#plot points at sampling locations with area proportional to number of samples at the location --> COI
+m.scatter(COI_Locations_wFreq['Longitude'], COI_Locations_wFreq['Latitude'], latlon=True,
+          s=100*COI_Locations_wFreq['NumAtLocation'], label=None, zorder=10, c='#8c510a', edgecolor='black',
+          linewidth=1)
 
-for a in [5, 20, 40]:
-    plt.scatter([], [], c='k', s=100*a, label=str(a))
-plt.legend(scatterpoints=1, frameon=False, labelspacing=1.5, columnspacing=1,
-           loc='lower left', fontsize=28)
-
-# divider = make_axes_locatable(plt.gca())
-# cax = divider.append_axes("right", "2%", pad="1%")
-# cbar = plt.colorbar(n, cax=cax)
-# cbar.ax.tick_params(labelsize=40)
+#create a legend
+for a in [1, 5, 20, 40]:
+    plt.scatter([], [], c='k', s=100*a, label=str(a), edgecolors='k', linewidths=1)
+plt.legend(scatterpoints=1, frameon=False, labelspacing=0.5, columnspacing=1,
+           loc='center right', fontsize=50)
 
 plt.tight_layout()
 
-pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/HaplotypePlots/" +
-               'Haplo_Locations_wFreq_allSamples' + '.pdf')
+# pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/HaplotypePlots/" +
+#                'GeneticData_Locations_wFreq_allSamples_forPaper' + '.pdf')
+#
+# pdf.savefig(dpi=fig.dpi, orientation='landscape')
+# pdf.close()
 
-pdf.savefig(dpi=fig.dpi, orientation='landsccape')
-pdf.close()
-
-# plt.show()
-plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/HaplotypePlots/" +
-            'Haplo_Locations_wFreq_allSamples' + '.png',
-            type='png', dpi=fig.dpi, bbox_inches='tight')
+plt.show()
+# plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/HaplotypePlots/" +
+#             'Haplo_Locations_wFreq_allSamples' + '.png',
+#             type='png', dpi=fig.dpi, bbox_inches='tight')
 
