@@ -25,7 +25,7 @@ my_dpi = 96
 fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
 
 #make the geographic background map
-m = Basemap(llcrnrlat=10, llcrnrlon=-128, urcrnrlat=60, urcrnrlon=-62)
+m = Basemap(llcrnrlat=10, llcrnrlon=-140, urcrnrlat=65, urcrnrlon=-62)
 m.drawcoastlines(color='gray')
 m.drawcountries(color='k', linewidth=1)
 m.drawstates(color='gray')
@@ -49,15 +49,15 @@ m.scatter(COI_Locations_wFreq['Longitude'], COI_Locations_wFreq['Latitude'], lat
 for a in [1, 5, 20, 40]:
     plt.scatter([], [], c='k', s=100*a, label=str(a), edgecolors='k', linewidths=1)
 plt.legend(scatterpoints=1, frameon=False, labelspacing=0.5, columnspacing=1,
-           loc='center right', fontsize=50)
+           loc='lower right', fontsize=50)
 
 plt.tight_layout()
 
-# pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/HaplotypePlots/" +
-#                'GeneticData_Locations_wFreq_allSamples_forPaper' + '.pdf')
-#
-# pdf.savefig(dpi=fig.dpi, orientation='landscape')
-# pdf.close()
+pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/HaplotypePlots/" +
+               'GeneticData_Locations_wFreq_allSamples_forPaper' + '.pdf')
+
+pdf.savefig(dpi=fig.dpi, orientation='landscape')
+pdf.close()
 
 plt.show()
 # plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/HaplotypePlots/" +
