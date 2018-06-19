@@ -25,9 +25,10 @@ my_dpi = 96
 fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
 
 #make the geographic background map
-m = Basemap(llcrnrlat=10, llcrnrlon=-140, urcrnrlat=65, urcrnrlon=-62)
-m.drawcoastlines(color='gray')
-m.drawcountries(color='k', linewidth=1)
+# m = Basemap(llcrnrlat=10, llcrnrlon=-140, urcrnrlat=65, urcrnrlon=-62)
+m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
+m.drawcoastlines(color='k', linewidth=1.5)
+m.drawcountries(color='k', linewidth=1.5)
 m.drawstates(color='gray')
 m.drawmapboundary(fill_color='w', color='none')
 
@@ -54,7 +55,7 @@ plt.legend(scatterpoints=1, frameon=False, labelspacing=0.5, columnspacing=1,
 plt.tight_layout()
 
 pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/HaplotypePlots/" +
-               'GeneticData_Locations_wFreq_allSamples_forPaper' + '.pdf')
+               'GeneticData_Locations_wFreq_allSamples_forPaper2' + '.pdf')
 
 pdf.savefig(dpi=fig.dpi, orientation='landscape')
 pdf.close()
