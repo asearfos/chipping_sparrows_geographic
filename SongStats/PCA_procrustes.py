@@ -49,6 +49,24 @@ principalDf = pd.DataFrame(data=PCs_nComp, columns=['PC1', 'PC2'])
 finalDf = pd.concat([data_for_PCA[['Region', 'Latitude', 'Longitude']], principalDf], axis=1)
 print(pca.explained_variance_ratio_)
 
+
+"""
+PC1 and PC2 correlation to song variables
+"""
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData/PCA_Procrustes/PCA_songVar_corr'
+          '.csv', 'wb') as file:
+    filewriter = csv.writer(file, delimiter=',')
+    filewriter.writerow(['Song Variable',
+                         'PC1 r',
+                         'PC1 pval',
+                         'PC2 r',
+                         'PC2 pval'])
+
+    for var in data_for_PCA.columns.values[3:]:
+        r1, pval1 = stats.pearsonr(x=data_for_PCA[var], y=finalDf['PC1'])
+        r2, pval2 = stats.pearsonr(x=data_for_PCA[var], y=finalDf['PC2'])
+        filewriter.writerow([var, r1, pval1, r2, pval2])
+
 """
 Plotting settings
 """
@@ -65,96 +83,97 @@ colors = {'east': '#1f78b4', 'west': '#33a02c', 'mid': '#542788', 'south': '#f17
 """
 Plot first and second PCs
 """
-
-fig0, ax0 = plt.subplots()
-for group in finalDf.Region.unique():
-    sdata = finalDf.loc[finalDf['Region'].isin([group])]
-    PC1_mean = np.mean(sdata['PC1'])
-    PC2_mean = np.mean(sdata['PC2'])
-    cov = np.cov(sdata['PC1'], sdata['PC2'])
-    ax0.scatter(sdata['PC1'], sdata['PC2'], color=colors.get(group), alpha=0.6, s=50, label=group)
-    # ax0.add_artist(e)
-
-xlim = ax0.get_xlim()
-ylim = ax0.get_ylim()
-ax0.set_xlabel('PC1')
-ax0.set_ylabel('PC2')
-ax0.legend(loc='upper left')
-plt.show()
-
-
-# save figure
-fig0.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\PCA_Procrustes'
-                 '\PCA_scatter_PC1PC2AllRegions_forPaper.pdf')
+#
+# fig0, ax0 = plt.subplots()
+# for group in finalDf.Region.unique():
+#     sdata = finalDf.loc[finalDf['Region'].isin([group])]
+#     PC1_mean = np.mean(sdata['PC1'])
+#     PC2_mean = np.mean(sdata['PC2'])
+#     cov = np.cov(sdata['PC1'], sdata['PC2'])
+#     ax0.scatter(sdata['PC1'], sdata['PC2'], color=colors.get(group), alpha=0.6, s=50, label=group)
+#     # ax0.add_artist(e)
+#
+# xlim = ax0.get_xlim()
+# ylim = ax0.get_ylim()
+# ax0.set_xlabel('PC1')
+# ax0.set_ylabel('PC2')
+# ax0.legend(loc='upper left')
+# plt.show()
+#
+#
+# # save figure
+# fig0.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\PCA_Procrustes'
+#                  '\PCA_scatter_PC1PC2AllRegions_forPaper.pdf')
 
 """"
 Plot scatter with Confidence Ellipses
 """
-
-def get_cov_ellipse(cov, centre, nstd, **kwargs):
-    """
-    Return a matplotlib Ellipse patch representing the covariance matrix
-    cov centred at centre and scaled by the factor nstd.
-
-    """
-
-    # Find and sort eigenvalues and eigenvectors into descending order
-    eigvals, eigvecs = np.linalg.eigh(cov)
-    order = eigvals.argsort()[::-1]
-    eigvals, eigvecs = eigvals[order], eigvecs[:, order]
-
-    # The anti-clockwise angle to rotate our ellipse by
-    vx, vy = eigvecs[:, 0][0], eigvecs[:, 0][1]
-    theta = np.arctan2(vy, vx)
-
-    # Width and height of ellipse to draw
-    width, height = 2 * nstd * np.sqrt(eigvals)
-    return Ellipse(xy=centre, width=width, height=height,
-                   angle=np.degrees(theta), **kwargs)
-
-fig1, ax1 = plt.subplots()
-for group in ['east', 'west']:
-    sdata = finalDf.loc[finalDf['Region'].isin([group])]
-    PC1_mean = np.mean(sdata['PC1'])
-    PC2_mean = np.mean(sdata['PC2'])
-    cov = np.cov(sdata['PC1'], sdata['PC2'])
-    ax1.scatter(sdata['PC1'], sdata['PC2'], color=colors.get(group), alpha=0.6, s=50, label=group)
-    e = get_cov_ellipse(cov, (PC1_mean, PC2_mean), 2,
-                        fc=colors.get(group), alpha=0.4)
-    ax1.add_artist(e)
-
-ax1.set_xlim(xlim[0], xlim[1])
-ax1.set_ylim(ylim[0], ylim[1])
-ax1.set_xlabel('PC1')
-ax1.set_ylabel('PC2')
-ax1.legend(loc='upper left')
-plt.show()
-
-# save figure
-fig1.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\PCA_Procrustes'
-                 '\PCA_scatter_PC1PC2EastWestEllipses_forPaper.pdf')
+#
+# def get_cov_ellipse(cov, centre, nstd, **kwargs):
+#     """
+#     Return a matplotlib Ellipse patch representing the covariance matrix
+#     cov centred at centre and scaled by the factor nstd.
+#
+#     """
+#
+#     # Find and sort eigenvalues and eigenvectors into descending order
+#     eigvals, eigvecs = np.linalg.eigh(cov)
+#     order = eigvals.argsort()[::-1]
+#     eigvals, eigvecs = eigvals[order], eigvecs[:, order]
+#
+#     # The anti-clockwise angle to rotate our ellipse by
+#     vx, vy = eigvecs[:, 0][0], eigvecs[:, 0][1]
+#     theta = np.arctan2(vy, vx)
+#
+#     # Width and height of ellipse to draw
+#     width, height = 2 * nstd * np.sqrt(eigvals)
+#     return Ellipse(xy=centre, width=width, height=height,
+#                    angle=np.degrees(theta), **kwargs)
+#
+# fig1, ax1 = plt.subplots()
+# for group in ['east', 'west']:
+#     sdata = finalDf.loc[finalDf['Region'].isin([group])]
+#     PC1_mean = np.mean(sdata['PC1'])
+#     PC2_mean = np.mean(sdata['PC2'])
+#     cov = np.cov(sdata['PC1'], sdata['PC2'])
+#     ax1.scatter(sdata['PC1'], sdata['PC2'], color=colors.get(group), alpha=0.6, s=50, label=group)
+#     e = get_cov_ellipse(cov, (PC1_mean, PC2_mean), 2,
+#                         fc=colors.get(group), alpha=0.4)
+#     ax1.add_artist(e)
+#
+# ax1.set_xlim(xlim[0], xlim[1])
+# ax1.set_ylim(ylim[0], ylim[1])
+# ax1.set_xlabel('PC1')
+# ax1.set_ylabel('PC2')
+# ax1.legend(loc='upper left')
+# plt.show()
+#
+# # save figure
+# fig1.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\PCA_Procrustes'
+#                  '\PCA_scatter_PC1PC2EastWestEllipses_forPaper.pdf')
 
 """"
 Plot points at mean locations proportional to number of samples
 """
+#
+# fig2, ax2 = plt.subplots()
+# for group in finalDf.Region.unique()[::-1]:
+#     sdata = finalDf.loc[finalDf['Region'].isin([group])]
+#     PC1_mean = np.mean(sdata['PC1'])
+#     PC2_mean = np.mean(sdata['PC2'])
+#     cov = np.cov(sdata['PC1'], sdata['PC2'])
+#     ax2.scatter(PC1_mean, PC2_mean, color=colors.get(group), s=2*len(sdata['PC1']), label=group)
+#
+# ax2.set_xlim(xlim[0], xlim[1])
+# ax2.set_ylim(ylim[0], ylim[1])
+# ax2.set_xlabel('PC1')
+# ax2.set_ylabel('PC2')
+# plt.show()
+#
+# # save figure
+# fig2.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\PCA_Procrustes'
+#                  '\PCA_scatter_MeanRegionLocations_forPaper.pdf')
 
-fig2, ax2 = plt.subplots()
-for group in finalDf.Region.unique()[::-1]:
-    sdata = finalDf.loc[finalDf['Region'].isin([group])]
-    PC1_mean = np.mean(sdata['PC1'])
-    PC2_mean = np.mean(sdata['PC2'])
-    cov = np.cov(sdata['PC1'], sdata['PC2'])
-    ax2.scatter(PC1_mean, PC2_mean, color=colors.get(group), s=2*len(sdata['PC1']), label=group)
-
-ax2.set_xlim(xlim[0], xlim[1])
-ax2.set_ylim(ylim[0], ylim[1])
-ax2.set_xlabel('PC1')
-ax2.set_ylabel('PC2')
-plt.show()
-
-# save figure
-fig2.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\PCA_Procrustes'
-                 '\PCA_scatter_MeanRegionLocations_forPaper.pdf')
 
 # """
 # Procrustes analysis
