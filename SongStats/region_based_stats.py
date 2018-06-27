@@ -211,15 +211,25 @@ m.drawcountries(color='k', linewidth=1.5)
 m.drawstates(color='gray')
 m.drawmapboundary(fill_color='w', color='none')
 
-m.hexbin(data_for_heatmaps['Longitude'], data_for_heatmaps['Latitude'], bins='log', mincnt=1, gridsize=50, cmap='cool')
+hb = m.hexbin(data_for_heatmaps['Longitude'], data_for_heatmaps['Latitude'], bins='log', mincnt=1, gridsize=50,
+           cmap='cool')
 cb = m.colorbar()
+
+ticks_number = []
+t_old = []
+for t in cb.ax.get_yticklabels():
+    t_old.append(float(t.get_text()))
+    new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
+    ticks_number.append(new_tick)
+cb.set_ticks(t_old)
+cb.set_ticklabels(["%.2f" % e for e in ticks_number])
 cb.ax.tick_params(labelsize=25)
-cb.set_label('log(Number)', size=25)
+cb.set_label('Number', size=25)
+
 plt.tight_layout()
 
-
 pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\GeoSpreadOfRecordings/" +
-               'AllRecordingLocations_UniqueUse_log' + '.pdf')
+               'AllRecordingLocations_UniqueUse_logBins' + '.pdf')
 
 pdf.savefig(dpi=fig.dpi, orientation='landscape')
 pdf.close()
@@ -240,12 +250,22 @@ m.drawmapboundary(fill_color='w', color='none')
 
 m.hexbin(data_for_wrs['Longitude'], data_for_wrs['Latitude'], bins='log', mincnt=1, gridsize=50, cmap='cool')
 cb = m.colorbar()
+
+ticks_number = []
+t_old = []
+for t in cb.ax.get_yticklabels():
+    t_old.append(float(t.get_text()))
+    new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
+    ticks_number.append(new_tick)
+cb.set_ticks(t_old)
+cb.set_ticklabels(["%.2f" % e for e in ticks_number])
 cb.ax.tick_params(labelsize=25)
-cb.set_label('log(Number)', size=25)
+cb.set_label('Number', size=25)
+
 plt.tight_layout()
 
 pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\GeoSpreadOfRecordings/" +
-               'EastWestSouthRecordingLocations_UniqueUse_log' + '.pdf')
+               'EastWestSouthRecordingLocations_UniqueUse_logBins' + '.pdf')
 
 pdf.savefig(dpi=fig.dpi, orientation='landscape')
 pdf.close()
@@ -281,12 +301,22 @@ m.drawmapboundary(fill_color='w', color='none')
 
 m.hexbin(data_downsampled['Longitude'], data_downsampled['Latitude'], bins='log', mincnt=1, gridsize=50, cmap='cool')
 cb = m.colorbar()
+
+ticks_number = []
+t_old = []
+for t in cb.ax.get_yticklabels():
+    t_old.append(float(t.get_text()))
+    new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
+    ticks_number.append(new_tick)
+cb.set_ticks(t_old)
+cb.set_ticklabels(["%.2f" % e for e in ticks_number])
 cb.ax.tick_params(labelsize=25)
-cb.set_label('log(Number)', size=25)
+cb.set_label('Number', size=25)
+
 plt.tight_layout()
 
 pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\GeoSpreadOfRecordings/" +
-               'EastWestSouthRecordingLocations_UniqueUse_binned_log' + '.pdf')
+               'EastWestSouthRecordingLocations_UniqueUse_downsampled_logBins' + '.pdf')
 
 pdf.savefig(dpi=fig.dpi, orientation='landscape')
 pdf.close()
