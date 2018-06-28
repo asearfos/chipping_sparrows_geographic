@@ -35,124 +35,125 @@ data_for_heatmaps = data_subset.copy()
 Discrete Stats Tests using Regions:
 Wilcoxon Rank sums for regions: east, west, south and the 16 song variables
 """
-# with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData/BoxPlots_Norm/PaperVersion'
-#           '/region_WilcoxonRanksums.csv', 'wb') as file:
-#     filewriter = csv.writer(file, delimiter=',')
-#     filewriter.writerow(['Song Variable', 'EW Wilcoxon p', 'EW p-value', 'ES Wilcoxon p', 'ES p-value', 'WS Wilcoxon p',
-#                          'WS p-value'])
-#
-#     # song_variables = ['Mean Note Duration (log(ms))',
-#     #                   'Mean Note Frequency Modulation (log(Hz))',
-#     #                   'Mean Note Frequency Trough (log(Hz))',
-#     #                   'Mean Note Frequency Peak (log(Hz))',
-#     #                   'Mean Inter-Syllable Silence Duration (log(ms))',
-#     #                   'Mean Syllable Duration (log(ms))',
-#     #                   'Mean Syllable Frequency Modulation (log(Hz))',
-#     #                   'Mean Syllable Frequency Trough (log(Hz))',
-#     #                   'Mean Syllable Frequency Peak (log(Hz))',
-#     #                   'Duration of Song Bout (log(ms))',
-#     #                   'Mean Stereotypy of Repeated Syllables (%)',
-#     #                   'Number of Notes per Syllable',
-#     #                   'Syllable Rate (log(number/ms))',
-#     #                   'Total Number of Syllables',
-#     #                   'Standard Deviation of Note Duration (log(ms))',
-#     #                   'Standard Deviation of Note Frequency Modulation (Hz)']
-#
-#     song_variables = ['Mean Note Duration',
-#                       'Mean Note Frequency Modulation',
-#                       'Mean Note Frequency Trough',
-#                       'Mean Note Frequency Peak',
-#                       'Mean Inter-Syllable Silence Duration',
-#                       'Mean Syllable Duration',
-#                       'Mean Syllable Frequency Modulation',
-#                       'Mean Syllable Frequency Trough',
-#                       'Mean Syllable Frequency Peak',
-#                       'Duration of Song Bout',
-#                       'Mean Stereotypy of Repeated Syllables',
-#                       'Number of Notes per Syllable',
-#                       'Syllable Rate',
-#                       'Total Number of Syllables',
-#                       'Standard Deviation of Note Duration',
-#                       'Standard Deviation of Note Frequency Modulation']
-#
-#     song_units = ['log(ms)',
-#                       'log(Hz)',
-#                       'log(Hz)',
-#                       'log(Hz)',
-#                       'log(ms)',
-#                       'log(ms)',
-#                       'log(Hz)',
-#                       'log(Hz)',
-#                       'log(Hz)',
-#                       'log(ms)',
-#                       '(%)',
-#                       'Number',
-#                       'log(number/ms)',
-#                       'Number',
-#                       'log(ms)',
-#                       'Hz']
-#
-#     count = 0
-#     for sv in data_for_wrs.columns[3:]:
-#         e = data_for_wrs.loc[data_for_wrs['Region'] == 'east', sv]
-#         w = data_for_wrs.loc[data_for_wrs['Region'] == 'west', sv]
-#         s = data_for_wrs.loc[data_for_wrs['Region'] == 'south', sv]
-#
-#         filewriter.writerow([sv, ranksums(e, w)[0], ranksums(e, w)[1], ranksums(e, s)[0], ranksums(e, s)[1],
-#                              ranksums(w, s)[0], ranksums(w, s)[1]])
-#
-#         fig = plt.figure(figsize=(7, 11))
-#         sns.set(style='white')
-#         ax = sns.boxplot(x='Region', y=sv, data=data_for_wrs[['Region', sv]], color='None', fliersize=0, width=0.5,
-#                          linewidth=2)
-#         ax = sns.stripplot(x='Region', y=sv, data=data_for_wrs[['Region', sv]],
-#                            palette=['#f17300', '#1f78b4', '#33a02c'],
-#                            size=7, jitter=True, lw=1, alpha=0.6)
-#         #different colors:
-#         # ax = sns.stripplot(x='Region', y=sv, data=data_for_wrs[['Region', sv]],
-#         #                    palette=sns.xkcd_palette(['windows blue', 'amber', 'green']), size=7, jitter=True, lw=1)
-#
-#         # Make the boxplot fully transparent
-#         for patch in ax.artists:
-#             r, g, b, a = patch.get_facecolor()
-#             patch.set_facecolor((r, g, b, 0))
-#
-#         # remove border around plot
-#         # ax.spines["top"].set_visible(False)7
-#         # ax.spines["right"].set_visible(False)
-#
-#         # # adjust ticks
-#         # plt.yticks(fontsize=14)
-#         # plt.xticks(fontsize=14)
-#         #
-#         # # axis limits
-#         # plt.ylim(data_for_wrs[sv].min(), data_for_wrs[sv].max())
-#
-#         ax.set_title(song_variables[count], fontsize=25, y=1.05)
-#         ax.set_ylabel(song_units[count], fontsize=20)
-#         ax.set_xlabel('')
-#         ax.tick_params(labelsize=15, direction='out')
-#         ax.set(xticklabels=[])
-#         plt.setp(ax.spines.values(), linewidth=2)
-#         count += 1
-#
-#         plt.tight_layout()
-#         pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
-#                        "/PaperVersion/" + sv + '.pdf')
-#         pdf.savefig(orientation='landscape')
-#         pdf.close()
-#
-#         # manager = plt.get_current_fig_manager()
-#         # manager.window.showMaximized()
-#         #
-#         # plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
-#         #             "/PaperVersion/" + sv + '.png',
-#         #             type='png', dpi=fig.dpi, bbox_inches='tight')
-#         # plt.cla()
-#         # plt.clf()
-#         # plt.close()
-#
-#         # plt.show()
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData/BoxPlots_Norm/PaperVersion'
+          '/region_WilcoxonRanksums.csv', 'wb') as file:
+    # filewriter = csv.writer(file, delimiter=',')
+    # filewriter.writerow(['Song Variable', 'EW Wilcoxon p', 'EW p-value', 'ES Wilcoxon p', 'ES p-value', 'WS Wilcoxon p',
+    #                      'WS p-value'])
+
+    # song_variables = ['Mean Note Duration (log(ms))',
+    #                   'Mean Note Frequency Modulation (log(Hz))',
+    #                   'Mean Note Frequency Trough (log(Hz))',
+    #                   'Mean Note Frequency Peak (log(Hz))',
+    #                   'Mean Inter-Syllable Silence Duration (log(ms))',
+    #                   'Mean Syllable Duration (log(ms))',
+    #                   'Mean Syllable Frequency Modulation (log(Hz))',
+    #                   'Mean Syllable Frequency Trough (log(Hz))',
+    #                   'Mean Syllable Frequency Peak (log(Hz))',
+    #                   'Duration of Song Bout (log(ms))',
+    #                   'Mean Stereotypy of Repeated Syllables (%)',
+    #                   'Number of Notes per Syllable',
+    #                   'Syllable Rate (log(number/ms))',
+    #                   'Total Number of Syllables',
+    #                   'Standard Deviation of Note Duration (log(ms))',
+    #                   'Standard Deviation of Note Frequency Modulation (Hz)']
+
+    song_variables = ['Mean Note Duration',
+                      'Mean Note Frequency Modulation',
+                      'Mean Note Frequency Trough',
+                      'Mean Note Frequency Peak',
+                      'Mean Inter-Syllable Silence Duration',
+                      'Mean Syllable Duration',
+                      'Mean Syllable Frequency Modulation',
+                      'Mean Syllable Frequency Trough',
+                      'Mean Syllable Frequency Peak',
+                      'Duration of Song Bout',
+                      'Mean Stereotypy of Repeated Syllables',
+                      'Number of Notes per Syllable',
+                      'Syllable Rate',
+                      'Total Number of Syllables',
+                      'Standard Deviation of Note Duration',
+                      'Standard Deviation of Note Frequency Modulation']
+
+    song_units = ['log(ms)',
+                      'log(Hz)',
+                      'log(Hz)',
+                      'log(Hz)',
+                      'log(ms)',
+                      'log(ms)',
+                      'log(Hz)',
+                      'log(Hz)',
+                      'log(Hz)',
+                      'log(ms)',
+                      '(%)',
+                      'lot(number)',
+                      'log(number/ms)',
+                      'log(number)',
+                      'log(ms)',
+                      'Hz']
+
+    count = 0
+    for sv in data_for_wrs.columns[3:]:
+        e = data_for_wrs.loc[data_for_wrs['Region'] == 'east', sv]
+        w = data_for_wrs.loc[data_for_wrs['Region'] == 'west', sv]
+        s = data_for_wrs.loc[data_for_wrs['Region'] == 'south', sv]
+
+        # filewriter.writerow([sv, ranksums(e, w)[0], ranksums(e, w)[1], ranksums(e, s)[0], ranksums(e, s)[1],
+        #                      ranksums(w, s)[0], ranksums(w, s)[1]])
+
+        fig = plt.figure(figsize=(7, 11))
+        my_dpi = 96
+        # fig = plt.figure(figsize=(1800 / my_dpi, 2600 / my_dpi), dpi=my_dpi, frameon=False)
+        sns.set(style='white')
+        ax = sns.boxplot(x='Region', y=sv, data=data_for_wrs[['Region', sv]], color='None', fliersize=0, width=0.5,
+                         linewidth=2)
+        ax = sns.stripplot(x='Region', y=sv, data=data_for_wrs[['Region', sv]],
+                           palette=['#f17300', '#1f78b4', '#33a02c'],
+                           size=7, jitter=True, lw=1, alpha=0.6)
+        #different colors:
+        # ax = sns.stripplot(x='Region', y=sv, data=data_for_wrs[['Region', sv]],
+        #                    palette=sns.xkcd_palette(['windows blue', 'amber', 'green']), size=7, jitter=True, lw=1)
+
+        # Make the boxplot fully transparent
+        for patch in ax.artists:
+            r, g, b, a = patch.get_facecolor()
+            patch.set_facecolor((r, g, b, 0))
+
+        # remove border around plot
+        # ax.spines["top"].set_visible(False)7
+        # ax.spines["right"].set_visible(False)
+
+        # # adjust ticks
+        # plt.yticks(fontsize=14)
+        # plt.xticks(fontsize=14)
+        #
+        # # axis limits
+        # plt.ylim(data_for_wrs[sv].min(), data_for_wrs[sv].max())
+
+        # ax.set_title(song_variables[count], fontsize=25, y=1.05)
+        ax.set_ylabel(song_units[count], fontsize=26)
+        ax.set_xlabel('')
+        ax.tick_params(labelsize=20, direction='out')
+        ax.set(xticklabels=[])
+        plt.setp(ax.spines.values(), linewidth=2)
+        count += 1
+
+        # # plt.tight_layout()
+        # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+        #                "/PaperVersion/" + sv + '.pdf')
+        # pdf.savefig(orientation='landscape')
+        # pdf.close()
+
+        # manager = plt.get_current_fig_manager()
+        # manager.window.showMaximized()
+
+        plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+                    "/PaperVersion/" + sv + '.pdf', type='pdf', dpi=fig.dpi, bbox_inches='tight')
+        # plt.cla()
+        # plt.clf()
+        plt.close()
+
+        # plt.show()
 
 
 """"
@@ -197,80 +198,82 @@ HEAT MAPS OF SIGNIFICANT FEATURES ON GEOGRAPHICAL MAP
 """"
 Binned heatmap showing geographical distribution of data
 """
+#
+# # plot locations of all the song data collected --> this includes for all regions the unique songs and all songs
+# # chosen as use for possible duplicates
+#
+# my_dpi = 96
+# fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
+#
+# # make the background map
+# m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
+# m.drawcoastlines(color='k', linewidth=1.5)
+# m.drawcountries(color='k', linewidth=1.5)
+# m.drawstates(color='gray')
+# m.drawmapboundary(fill_color='w', color='none')
+#
+# hb = m.hexbin(data_for_heatmaps['Longitude'], data_for_heatmaps['Latitude'], bins='log', mincnt=1, gridsize=50,
+#            cmap='cool')
+# cb = m.colorbar()
+#
+# ticks_number = []
+# t_old = []
+# for t in cb.ax.get_yticklabels():
+#     t_old.append(float(t.get_text()))
+#     new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
+#     ticks_number.append(new_tick)
+# cb.set_ticks(t_old)
+# cb.set_ticklabels(["%.2f" % e for e in ticks_number])
+# cb.ax.tick_params(labelsize=25)
+# cb.set_label('Number', size=25)
+#
+# plt.tight_layout()
+#
+# pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\GeoSpreadOfRecordings/" +
+#                'AllRecordingLocations_UniqueUse_logBins' + '.pdf')
+#
+# pdf.savefig(dpi=fig.dpi, orientation='landscape')
+# pdf.close()
+#
+# plt.show()
+#
+# # plot locations of song data used for computations--> this includes all unique songs and all songs chosen as use for
+# # possible duplicates but only for East and West and South (excludes mid)
+# my_dpi = 96
+# fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
+#
+# # make the background map
+# m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
+# m.drawcoastlines(color='k', linewidth=1.5)
+# m.drawcountries(color='k', linewidth=1.5)
+# m.drawstates(color='gray')
+# m.drawmapboundary(fill_color='w', color='none')
+#
+# m.hexbin(data_for_wrs['Longitude'], data_for_wrs['Latitude'], bins='log', mincnt=1, gridsize=50, cmap='cool')
+# cb = m.colorbar()
+#
+# ticks_number = []
+# t_old = []
+# for t in cb.ax.get_yticklabels():
+#     t_old.append(float(t.get_text()))
+#     new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
+#     ticks_number.append(new_tick)
+# cb.set_ticks(t_old)
+# cb.set_ticklabels(["%.2f" % e for e in ticks_number])
+# cb.ax.tick_params(labelsize=25)
+# cb.set_label('Number', size=25)
+#
+# plt.tight_layout()
+#
+# pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\GeoSpreadOfRecordings/" +
+#                'EastWestSouthRecordingLocations_UniqueUse_logBins' + '.pdf')
+#
+# pdf.savefig(dpi=fig.dpi, orientation='landscape')
+# pdf.close()
+#
+# plt.show()
 
-# plot locations of all the song data collected --> this includes for all regions the unique songs and all songs
-# chosen as use for possible duplicates
-
-my_dpi = 96
-fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
-
-# make the background map
-m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
-m.drawcoastlines(color='k', linewidth=1.5)
-m.drawcountries(color='k', linewidth=1.5)
-m.drawstates(color='gray')
-m.drawmapboundary(fill_color='w', color='none')
-
-hb = m.hexbin(data_for_heatmaps['Longitude'], data_for_heatmaps['Latitude'], bins='log', mincnt=1, gridsize=50,
-           cmap='cool')
-cb = m.colorbar()
-
-ticks_number = []
-t_old = []
-for t in cb.ax.get_yticklabels():
-    t_old.append(float(t.get_text()))
-    new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
-    ticks_number.append(new_tick)
-cb.set_ticks(t_old)
-cb.set_ticklabels(["%.2f" % e for e in ticks_number])
-cb.ax.tick_params(labelsize=25)
-cb.set_label('Number', size=25)
-
-plt.tight_layout()
-
-pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\GeoSpreadOfRecordings/" +
-               'AllRecordingLocations_UniqueUse_logBins' + '.pdf')
-
-pdf.savefig(dpi=fig.dpi, orientation='landscape')
-pdf.close()
-
-plt.show()
-
-# plot locations of song data used for computations--> this includes all unique songs and all songs chosen as use for
-# possible duplicates but only for East and West and South (excludes mid)
-my_dpi = 96
-fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
-
-# make the background map
-m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
-m.drawcoastlines(color='k', linewidth=1.5)
-m.drawcountries(color='k', linewidth=1.5)
-m.drawstates(color='gray')
-m.drawmapboundary(fill_color='w', color='none')
-
-m.hexbin(data_for_wrs['Longitude'], data_for_wrs['Latitude'], bins='log', mincnt=1, gridsize=50, cmap='cool')
-cb = m.colorbar()
-
-ticks_number = []
-t_old = []
-for t in cb.ax.get_yticklabels():
-    t_old.append(float(t.get_text()))
-    new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
-    ticks_number.append(new_tick)
-cb.set_ticks(t_old)
-cb.set_ticklabels(["%.2f" % e for e in ticks_number])
-cb.ax.tick_params(labelsize=25)
-cb.set_label('Number', size=25)
-
-plt.tight_layout()
-
-pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\GeoSpreadOfRecordings/" +
-               'EastWestSouthRecordingLocations_UniqueUse_logBins' + '.pdf')
-
-pdf.savefig(dpi=fig.dpi, orientation='landscape')
-pdf.close()
-
-plt.show()
+quit()
 
 """
 Downsampling of data to check we get the same results - only one random sample from each lat/long
