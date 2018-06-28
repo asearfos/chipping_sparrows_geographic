@@ -11,7 +11,7 @@ import datetime
 Load data and organize/subset for PCA and procrustes testing
 """
 data_path = 'C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation' + \
-            '/FinalDataframe_CombinedTables_LogTransformed.csv'
+            '/FinalDataframe_CombinedTables.csv'
 log_song_data = pd.DataFrame.from_csv(data_path, header=0, index_col=None)
 
 # log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['unique', 'use'])].copy().reset_index(
@@ -29,131 +29,86 @@ data_for_dawn = data_for_dawn.drop(col_to_skip2, axis=1)
 data_for_dawn['RecordingTime'] = pd.to_datetime(data_for_dawn['RecordingTime']).dt.time
 
 """
-Wilcoxon Rank sums for dawn vs day (rough time estimates) 
+Wilcoxon Rank sums for dawn vs day (rough time estimates)
 """
-# WILCOXON RANKSUMS
-dawn_dur = data_for_tod[data_for_tod['RecordingTime'].le(datetime.time(hour=5, minute=30))]['BoutDuration_ms']
-day_dur = data_for_tod[data_for_tod['RecordingTime'].ge(datetime.time(hour=8, minute=0))]['BoutDuration_ms']
-print('dawn vs day', ranksums(dawn_dur, day_dur))
-print(type(dawn_dur))
-
-# make dataframe with categories dawn and day
-dawn_day_df = pd.DataFrame(columns=('BoutDuration_ms', 'NumSyllables', 'RecordingTime', 'DawnVsDay'))
-dawn_day_df['DawnVsDay'] = dawn_day_df.DawnVsDay.astype(str)
-dawn_day_df[['BoutDuration_ms', 'NumSyllables', 'RecordingTime']] = data_for_tod[['BoutDuration_ms', 'NumSyllables',
-                                                                                  'RecordingTime']]
-
-dawn_day_df['DawnVsDay'][dawn_day_df['RecordingTime'] < (datetime.time(hour=5, minute=30))] = 'Dawn'
-dawn_day_df['DawnVsDay'][dawn_day_df['RecordingTime'] > (datetime.time(hour=8, minute=00))] = 'Day'
-
-
-# FIGURE 1: bout duration between dawn vs. day
-fig = plt.figure(figsize=(7, 11))
-sns.set(style='white')
-ax = sns.boxplot(x='DawnVsDay', y='BoutDuration_ms', data=dawn_day_df, color='None', fliersize=0, width=0.5,
-                 linewidth=3)
-ax = sns.stripplot(x='DawnVsDay', y='BoutDuration_ms', data=dawn_day_df, palette=['#1f78b4', '#33a02c'],
-                   size=7, jitter=True, lw=1)
-
-# Make the boxplot fully transparent
-for patch in ax.artists:
-    r, g, b, a = patch.get_facecolor()
-    patch.set_facecolor((r, g, b, 0))
-
-# remove border around plot
-ax.spines["top"].set_visible(False)
-ax.spines["right"].set_visible(False)
-
-ax.yaxis.set_ticks_position('left')
-ax.xaxis.set_ticks_position('bottom')
-# ax.set_title('Dawn Vs Day', fontsize=30, y=1.05)
-ax.set_ylabel('ln(Bout Duration) (ln(ms))', fontsize=50)
-ax.set_xlabel('')
-ax.tick_params(labelsize=40)
-plt.setp(ax.spines.values(), linewidth=3)
-
-
-# add bar if significant
-if ranksums(dawn_dur, day_dur)[1] < .001:
-    if ranksums(dawn_dur, day_dur) > 1e-07:
-        x1, x2 = 0.1, 0.9  # columns 'Sat' and 'Sun' (first column: 0, see plt.xticks())
-        # print(subset_corrTable_wRegion_norm[sv].max)
-        y, h, col = dawn_day_df['BoutDuration_ms'].max() + .05 * dawn_day_df['BoutDuration_ms'].max(), \
-                    .02 * dawn_day_df['BoutDuration_ms'].max(), 'k'
-        plt.plot([x1, x2], [y + h, y + h], lw=3, c=col)
-        plt.text((x1 + x2) * .5, y + h, "*", ha='center', va='bottom', color=col,
-                 fontsize=60, weight='semibold')
-        # plt.text((x1 + x2) * .5 + .6, y + h, 'p=%.2E' % ranksums(dawn_dur, day_dur)[1], ha='center', va='bottom', color=col,
-        #          fontsize=44)
-    else:
-        x1, x2 = 0.1, 0.9  # columns 'Sat' and 'Sun' (first column: 0, see plt.xticks())
-        # print(subset_corrTable_wRegion_norm[sv].max)
-        y, h, col = dawn_day_df['BoutDuration_ms'].max() + .05 * dawn_day_df['BoutDuration_ms'].max(), \
-                    .02 * dawn_day_df['BoutDuration_ms'].max(), 'k'
-        plt.plot([x1, x2], [y + h, y + h], lw=3, c=col)
-        plt.text((x1 + x2) * .5, y + h, "**", ha='center', va='bottom', color=col,
-                 fontsize=60, weight='semibold')
-        # plt.text((x1 + x2) * .5 + .6, y + h, 'p=%.2E' % ranksums(dawn_dur, day_dur)[1], ha='center', va='bottom', color=col,
-        #          fontsize=44)
-
+# # WILCOXON RANKSUMS
+# dawn_dur = data_for_tod[data_for_tod['RecordingTime'].le(datetime.time(hour=5, minute=30))]['BoutDuration_ms']
+# day_dur = data_for_tod[data_for_tod['RecordingTime'].ge(datetime.time(hour=8, minute=0))]['BoutDuration_ms']
+# print('dawn vs day', ranksums(dawn_dur, day_dur))
+# print(type(dawn_dur))
+#
+# # make dataframe with categories dawn and day
+# dawn_day_df = pd.DataFrame(columns=('BoutDuration_ms', 'NumSyllables', 'RecordingTime', 'DawnVsDay'))
+# dawn_day_df['DawnVsDay'] = dawn_day_df.DawnVsDay.astype(str)
+# dawn_day_df[['BoutDuration_ms', 'NumSyllables', 'RecordingTime']] = data_for_tod[['BoutDuration_ms', 'NumSyllables',
+#                                                                                   'RecordingTime']]
+#
+# dawn_day_df['DawnVsDay'][dawn_day_df['RecordingTime'] < (datetime.time(hour=5, minute=30))] = 'Dawn'
+# dawn_day_df['DawnVsDay'][dawn_day_df['RecordingTime'] > (datetime.time(hour=7, minute=30))] = 'Day'
+#
+#
+# # FIGURE 1: bout duration between dawn vs. day
+# cols = ['Dawn', 'Day']
+# fig = plt.figure(figsize=(7, 10))
+# sns.set(style='white')
+# ax = sns.boxplot(x='DawnVsDay', y='BoutDuration_ms', data=dawn_day_df, color='None', fliersize=0, width=0.5,
+#                  linewidth=3, order=cols)
+# ax = sns.stripplot(x='DawnVsDay', y='BoutDuration_ms', data=dawn_day_df, palette=['#b2abd2', '#542788'],
+#                    size=7, jitter=True, lw=1, order=cols)
+#
+# # Make the boxplot fully transparent
+# for patch in ax.artists:
+#     r, g, b, a = patch.get_facecolor()
+#     patch.set_facecolor((r, g, b, 0))
+#
+# # remove border around plot
+# ax.spines["top"].set_visible(False)
+# ax.spines["right"].set_visible(False)
+#
+# ax.yaxis.set_ticks_position('left')
+# ax.xaxis.set_ticks_position('bottom')
+# # ax.set_title('Dawn Vs Day', fontsize=30, y=1.05)
+# ax.set_ylabel('')
+# ax.set_xlabel('')
+# ax.tick_params(labelsize=40)
+# plt.setp(ax.spines.values(), linewidth=3)
+#
+# plt.tight_layout()
+# # plt.show()
+# plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/TimeAnalysis/JunePosterVersions"
+#             "/" + 'DawnVsDay_BoutDuration_Norm' + '.png', type='png', dpi=fig.dpi, bbox_inches='tight')
+#
+#
+#
+# # FIGURE 2: Number of syllables between dawn vs. day
+# fig = plt.figure(figsize=(7, 11))
+# sns.set(style='white')
+# ax = sns.boxplot(x='DawnVsDay', y='NumSyllables', data=dawn_day_df, color='None', fliersize=0, width=0.5, linewidth=3)
+# ax = sns.stripplot(x='DawnVsDay', y='NumSyllables', data=dawn_day_df, palette=['#1f78b4', '#33a02c'],
+#                    size=7, jitter=True, lw=1)
+#
+# # Make the boxplot fully transparent
+# for patch in ax.artists:
+#     r, g, b, a = patch.get_facecolor()
+#     patch.set_facecolor((r, g, b, 0))
+#
+# # remove border around plot
+# ax.spines["top"].set_visible(False)
+# ax.spines["right"].set_visible(False)
+#
+# ax.yaxis.set_ticks_position('left')
+# ax.xaxis.set_ticks_position('bottom')
+# # ax.set_title('Dawn Vs Day', fontsize=30, y=1.05)
+# ax.set_ylabel('ln(NumSyllables)', fontsize=50)
+# ax.set_xlabel('')
+# ax.tick_params(labelsize=40)
+# plt.setp(ax.spines.values(), linewidth=3)
+#
 # plt.show()
-plt.tight_layout()
-plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/TimeAnalysis/JunePosterVersions"
-            "/" + 'DawnVsDay_BoutDuration_Norm' + '.png', type='png', dpi=fig.dpi, bbox_inches='tight')
-
-
-# FIGURE 2: Number of syllables between dawn vs. day
-fig = plt.figure(figsize=(7, 11))
-sns.set(style='white')
-ax = sns.boxplot(x='DawnVsDay', y='NumSyllables', data=dawn_day_df, color='None', fliersize=0, width=0.5, linewidth=3)
-ax = sns.stripplot(x='DawnVsDay', y='NumSyllables', data=dawn_day_df, palette=['#1f78b4', '#33a02c'],
-                   size=7, jitter=True, lw=1)
-
-# Make the boxplot fully transparent
-for patch in ax.artists:
-    r, g, b, a = patch.get_facecolor()
-    patch.set_facecolor((r, g, b, 0))
-
-# remove border around plot
-ax.spines["top"].set_visible(False)
-ax.spines["right"].set_visible(False)
-
-ax.yaxis.set_ticks_position('left')
-ax.xaxis.set_ticks_position('bottom')
-# ax.set_title('Dawn Vs Day', fontsize=30, y=1.05)
-ax.set_ylabel('ln(NumSyllables)', fontsize=50)
-ax.set_xlabel('')
-ax.tick_params(labelsize=40)
-plt.setp(ax.spines.values(), linewidth=3)
-
-# add bar if significant
-if ranksums(dawn_dur, day_dur)[1] < .001:
-    if ranksums(dawn_dur, day_dur)[1] > 1e-07:
-        x1, x2 = 0.1, 0.9  # columns 'Sat' and 'Sun' (first column: 0, see plt.xticks())
-        # print(subset_corrTable_wRegion_norm[sv].max)
-        y, h, col = dawn_day_df['NumSyllables'].max() + .05 * dawn_day_df['NumSyllables'].max(), \
-                    .02 * dawn_day_df['NumSyllables'].max(), 'k'
-        plt.plot([x1, x2], [y + h, y + h], lw=3, c=col)
-        plt.text((x1 + x2) * .5, y + h, "*", ha='center', va='bottom', color=col,
-                 fontsize=60, weight='semibold')
-        # plt.text((x1 + x2) * .5 + .6, y + h, 'p=%.2E' % ranksums(dawn_dur, day_dur)[1], ha='center', va='bottom', color=col,
-        #          fontsize=44)
-    else:
-        x1, x2 = 0.1, 0.9  # columns 'Sat' and 'Sun' (first column: 0, see plt.xticks())
-        # print(subset_corrTable_wRegion_norm[sv].max)
-        y, h, col = dawn_day_df['NumSyllables'].max() + .05 * dawn_day_df['NumSyllables'].max(), \
-                    .02 * dawn_day_df['NumSyllables'].max(), 'k'
-        plt.plot([x1, x2], [y + h, y + h], lw=3, c=col)
-        plt.text((x1 + x2) * .5, y + h, "**", ha='center', va='bottom', color=col,
-                 fontsize=60, weight='semibold')
-        # plt.text((x1 + x2) * .5 + .6, y + h, 'p=%.2E' % ranksums(dawn_dur, day_dur)[1], ha='center', va='bottom', color=col,
-        #          fontsize=44)
-
-# plt.show()
-plt.tight_layout()
-plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/TimeAnalysis/JunePosterVersions"
-            "/" + 'DawnVsDay_NumSyllables_Norm' + '.png', type='png', dpi=fig.dpi, bbox_inches='tight')
-
+# # plt.tight_layout()
+# # plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/TimeAnalysis/JunePosterVersions"
+# #             "/" + 'DawnVsDay_NumSyllables_Norm' + '.png', type='png', dpi=fig.dpi, bbox_inches='tight')
+#
 
 """
 Wilcoxon Rank sums for dawn vs day (get actual dawn times for lat/long/date/time) 
