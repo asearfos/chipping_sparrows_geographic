@@ -86,7 +86,7 @@ with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalDa
                       'log(Hz)',
                       'log(ms)',
                       '(%)',
-                      'lot(number)',
+                      'log(number)',
                       'log(number/ms)',
                       'log(number)',
                       'log(ms)',
