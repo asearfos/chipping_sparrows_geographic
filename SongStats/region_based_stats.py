@@ -11,6 +11,7 @@ from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.colors as colors
 import csv
+from matplotlib.ticker import FuncFormatter
 
 """
 Load data and organize/subset wilcoxon rank sums test and heatmaps overlayed on geographical maps 
@@ -37,124 +38,256 @@ Wilcoxon Rank sums for regions: east, west, south and the 16 song variables
 """
 with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData/BoxPlots_Norm/PaperVersion'
           '/region_WilcoxonRanksums.csv', 'wb') as file:
-    # filewriter = csv.writer(file, delimiter=',')
-    # filewriter.writerow(['Song Variable', 'EW Wilcoxon p', 'EW p-value', 'ES Wilcoxon p', 'ES p-value', 'WS Wilcoxon p',
-    #                      'WS p-value'])
+    filewriter = csv.writer(file, delimiter=',')
+    filewriter.writerow(['Song Variable', 'EW Wilcoxon p', 'EW p-value', 'ES Wilcoxon p', 'ES p-value', 'WS Wilcoxon p',
+                         'WS p-value'])
 
-    # song_variables = ['Mean Note Duration (log(ms))',
-    #                   'Mean Note Frequency Modulation (log(Hz))',
-    #                   'Mean Note Frequency Trough (log(Hz))',
-    #                   'Mean Note Frequency Peak (log(Hz))',
-    #                   'Mean Inter-Syllable Silence Duration (log(ms))',
-    #                   'Mean Syllable Duration (log(ms))',
-    #                   'Mean Syllable Frequency Modulation (log(Hz))',
-    #                   'Mean Syllable Frequency Trough (log(Hz))',
-    #                   'Mean Syllable Frequency Peak (log(Hz))',
-    #                   'Duration of Song Bout (log(ms))',
-    #                   'Mean Stereotypy of Repeated Syllables (%)',
-    #                   'Number of Notes per Syllable',
-    #                   'Syllable Rate (log(number/ms))',
-    #                   'Total Number of Syllables',
-    #                   'Standard Deviation of Note Duration (log(ms))',
-    #                   'Standard Deviation of Note Frequency Modulation (Hz)']
-
-    song_variables = ['Mean Note Duration',
-                      'Mean Note Frequency Modulation',
-                      'Mean Note Frequency Trough',
-                      'Mean Note Frequency Peak',
-                      'Mean Inter-Syllable Silence Duration',
-                      'Mean Syllable Duration',
-                      'Mean Syllable Frequency Modulation',
-                      'Mean Syllable Frequency Trough',
-                      'Mean Syllable Frequency Peak',
-                      'Duration of Song Bout',
-                      'Mean Stereotypy of Repeated Syllables',
-                      'Number of Notes per Syllable',
-                      'Syllable Rate',
-                      'Total Number of Syllables',
-                      'Standard Deviation of Note Duration',
-                      'Standard Deviation of Note Frequency Modulation']
-
-    song_units = ['log(ms)',
-                      'log(Hz)',
-                      'log(Hz)',
-                      'log(Hz)',
-                      'log(ms)',
-                      'log(ms)',
-                      'log(Hz)',
-                      'log(Hz)',
-                      'log(Hz)',
-                      'log(ms)',
-                      '(%)',
-                      'log(number)',
-                      'log(number/ms)',
-                      'log(number)',
-                      'log(ms)',
-                      'Hz']
-
-    count = 0
     for sv in data_for_wrs.columns[3:]:
         e = data_for_wrs.loc[data_for_wrs['Region'] == 'east', sv]
         w = data_for_wrs.loc[data_for_wrs['Region'] == 'west', sv]
         s = data_for_wrs.loc[data_for_wrs['Region'] == 'south', sv]
 
-        # filewriter.writerow([sv, ranksums(e, w)[0], ranksums(e, w)[1], ranksums(e, s)[0], ranksums(e, s)[1],
-        #                      ranksums(w, s)[0], ranksums(w, s)[1]])
+        filewriter.writerow([sv, ranksums(e, w)[0], ranksums(e, w)[1], ranksums(e, s)[0], ranksums(e, s)[1],
+                             ranksums(w, s)[0], ranksums(w, s)[1]])
 
-        fig = plt.figure(figsize=(7, 11))
-        my_dpi = 96
-        # fig = plt.figure(figsize=(1800 / my_dpi, 2600 / my_dpi), dpi=my_dpi, frameon=False)
-        sns.set(style='white')
-        ax = sns.boxplot(x='Region', y=sv, data=data_for_wrs[['Region', sv]], color='None', fliersize=0, width=0.5,
-                         linewidth=2)
-        ax = sns.stripplot(x='Region', y=sv, data=data_for_wrs[['Region', sv]],
-                           palette=['#f17300', '#1f78b4', '#33a02c'],
-                           size=7, jitter=True, lw=1, alpha=0.6)
-        #different colors:
-        # ax = sns.stripplot(x='Region', y=sv, data=data_for_wrs[['Region', sv]],
-        #                    palette=sns.xkcd_palette(['windows blue', 'amber', 'green']), size=7, jitter=True, lw=1)
+quit()
+""""
+Box plot of results
+"""
+song_variables = ['Mean Note Duration',
+                  'Mean Note Frequency Modulation',
+                  'Mean Note Frequency Trough',
+                  'Mean Note Frequency Peak',
+                  'Mean Inter-Syllable Silence Duration',
+                  'Mean Syllable Duration',
+                  'Mean Syllable Frequency Modulation',
+                  'Mean Syllable Frequency Trough',
+                  'Mean Syllable Frequency Peak',
+                  'Duration of Song Bout',
+                  'Mean Stereotypy of Repeated Syllables',
+                  'Number of Notes per Syllable',
+                  'Syllable Rate',
+                  'Total Number of Syllables',
+                  'Standard Deviation of Note Duration',
+                  'Standard Deviation of Note Frequency Modulation']
 
-        # Make the boxplot fully transparent
-        for patch in ax.artists:
-            r, g, b, a = patch.get_facecolor()
-            patch.set_facecolor((r, g, b, 0))
+log_var = {3: 'ms', 7: 'ms', 8: 'ms', 14: 'number', 16: 'number', 17: 'ms'}
+log_convert_var = {9: 'kHz', 4: 'kHz', 5: 'kHz', 6: 'kHz', 10: 'kHz', 11: 'kHz', 12: 'seconds'}
+log_convert_inverse_var = {15: 'number/second'}
+no_log = {13: '%'}
+no_log_convert = {18: 'Hz'}
 
-        # remove border around plot
-        # ax.spines["top"].set_visible(False)7
-        # ax.spines["right"].set_visible(False)
+# take e^x for y-axis
+for key, value in log_var.items():
+    fig = plt.figure(figsize=(7, 11))
+    my_dpi = 96
+    sns.set(style='white')
+    ax = sns.boxplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]], color='None',
+                     fliersize=0, width=0.5,
+                     linewidth=2)
+    ax = sns.stripplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]],
+                       palette=['#f17300', '#1f78b4', '#33a02c'],
+                       size=7, jitter=True, lw=1, alpha=0.6)
 
-        # # adjust ticks
-        # plt.yticks(fontsize=14)
-        # plt.xticks(fontsize=14)
-        #
-        # # axis limits
-        # plt.ylim(data_for_wrs[sv].min(), data_for_wrs[sv].max())
+    # Make the boxplot fully transparent
+    for patch in ax.artists:
+        r, g, b, a = patch.get_facecolor()
+        patch.set_facecolor((r, g, b, 0))
 
-        # ax.set_title(song_variables[count], fontsize=25, y=1.05)
-        ax.set_ylabel(song_units[count], fontsize=26)
-        ax.set_xlabel('')
-        ax.tick_params(labelsize=20, direction='out')
-        ax.set(xticklabels=[])
-        plt.setp(ax.spines.values(), linewidth=2)
-        count += 1
+    ax.set_ylabel(song_variables[key-3] + ' (' + value + ')', fontsize=30)
+    ax.set_xlabel('')
+    ax.tick_params(labelsize=30, direction='out')
+    ax.set(xticklabels=[])
+    plt.setp(ax.spines.values(), linewidth=2)
+    ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x))))
 
-        # # plt.tight_layout()
-        # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
-        #                "/PaperVersion/" + sv + '.pdf')
-        # pdf.savefig(orientation='landscape')
-        # pdf.close()
+    # # plt.tight_layout()
+    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    #                "/PaperVersion/" + sv + '.pdf')
+    # pdf.savefig(orientation='landscape')
+    # pdf.close()
 
-        # manager = plt.get_current_fig_manager()
-        # manager.window.showMaximized()
+    # manager = plt.get_current_fig_manager()
+    # manager.window.showMaximized()
 
-        plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
-                    "/PaperVersion/" + sv + '.pdf', type='pdf', dpi=fig.dpi, bbox_inches='tight')
-        # plt.cla()
-        # plt.clf()
-        plt.close()
+    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+                "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
+                bbox_inches='tight')
+    # plt.cla()
+    # plt.clf()
+    plt.close()
 
-        # plt.show()
+    # plt.show()
 
+# take e^x for each variable and also convert from Hz to kHz or ms to seconds
+for key, value in log_convert_var.items():
+    fig = plt.figure(figsize=(7, 11))
+    my_dpi = 96
+    sns.set(style='white')
+    ax = sns.boxplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]], color='None',
+                     fliersize=0, width=0.5,
+                     linewidth=2)
+    ax = sns.stripplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]],
+                       palette=['#f17300', '#1f78b4', '#33a02c'],
+                       size=7, jitter=True, lw=1, alpha=0.6)
+
+    # Make the boxplot fully transparent
+    for patch in ax.artists:
+        r, g, b, a = patch.get_facecolor()
+        patch.set_facecolor((r, g, b, 0))
+
+    ax.set_ylabel(song_variables[key-3] + ' (' + value + ')', fontsize=30)
+    ax.set_xlabel('')
+    ax.tick_params(labelsize=30, direction='out')
+    ax.set(xticklabels=[])
+    plt.setp(ax.spines.values(), linewidth=2)
+    ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x)/1000)))
+
+    # # plt.tight_layout()
+    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    #                "/PaperVersion/" + sv + '.pdf')
+    # pdf.savefig(orientation='landscape')
+    # pdf.close()
+
+    # manager = plt.get_current_fig_manager()
+    # manager.window.showMaximized()
+
+    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+                "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
+                bbox_inches='tight')
+    # plt.cla()
+    # plt.clf()
+    plt.close()
+
+    # plt.show()
+
+# take e^x for each variable and convert from 1/ms to 1/seconds
+for key, value in log_convert_inverse_var.items():
+    fig = plt.figure(figsize=(7, 11))
+    my_dpi = 96
+    sns.set(style='white')
+    ax = sns.boxplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]], color='None',
+                     fliersize=0, width=0.5,
+                     linewidth=2)
+    ax = sns.stripplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]],
+                       palette=['#f17300', '#1f78b4', '#33a02c'],
+                       size=7, jitter=True, lw=1, alpha=0.6)
+
+    # Make the boxplot fully transparent
+    for patch in ax.artists:
+        r, g, b, a = patch.get_facecolor()
+        patch.set_facecolor((r, g, b, 0))
+
+    ax.set_ylabel(song_variables[key-3] + ' (' + value + ')', fontsize=30)
+    ax.set_xlabel('')
+    ax.tick_params(labelsize=30, direction='out')
+    ax.set(xticklabels=[])
+    plt.setp(ax.spines.values(), linewidth=2)
+    ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x)*1000)))
+
+    # # plt.tight_layout()
+    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    #                "/PaperVersion/" + sv + '.pdf')
+    # pdf.savefig(orientation='landscape')
+    # pdf.close()
+
+    # manager = plt.get_current_fig_manager()
+    # manager.window.showMaximized()
+
+    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+                "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
+                bbox_inches='tight')
+    # plt.cla()
+    # plt.clf()
+    plt.close()
+
+    # plt.show()
+
+# are not log(value) so no need to take exponential and no conversion
+for key, value in no_log.items():
+    fig = plt.figure(figsize=(7, 11))
+    my_dpi = 96
+    sns.set(style='white')
+    ax = sns.boxplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]], color='None',
+                     fliersize=0, width=0.5,
+                     linewidth=2)
+    ax = sns.stripplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]],
+                       palette=['#f17300', '#1f78b4', '#33a02c'],
+                       size=7, jitter=True, lw=1, alpha=0.6)
+
+    # Make the boxplot fully transparent
+    for patch in ax.artists:
+        r, g, b, a = patch.get_facecolor()
+        patch.set_facecolor((r, g, b, 0))
+
+    ax.set_ylabel(song_variables[key-3] + ' (' + value + ')', fontsize=30)
+    ax.set_xlabel('')
+    ax.tick_params(labelsize=30, direction='out')
+    ax.set(xticklabels=[])
+    plt.setp(ax.spines.values(), linewidth=2)
+    ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % x))
+
+    # # plt.tight_layout()
+    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    #                "/PaperVersion/" + sv + '.pdf')
+    # pdf.savefig(orientation='landscape')
+    # pdf.close()
+
+    # manager = plt.get_current_fig_manager()
+    # manager.window.showMaximized()
+
+    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+                "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
+                bbox_inches='tight')
+    # plt.cla()
+    # plt.clf()
+    plt.close()
+
+    # plt.show()
+
+# are not log(value) so no need to take exponential, convert from Hz to kHz
+for key, value in no_log_convert.items():
+    fig = plt.figure(figsize=(7, 11))
+    my_dpi = 96
+    sns.set(style='white')
+    ax = sns.boxplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]], color='None',
+                     fliersize=0, width=0.5,
+                     linewidth=2)
+    ax = sns.stripplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]],
+                       palette=['#f17300', '#1f78b4', '#33a02c'],
+                       size=7, jitter=True, lw=1, alpha=0.6)
+
+    # Make the boxplot fully transparent
+    for patch in ax.artists:
+        r, g, b, a = patch.get_facecolor()
+        patch.set_facecolor((r, g, b, 0))
+
+    ax.set_ylabel(song_variables[key-3] + ' (' + value + ')', fontsize=30)
+    ax.set_xlabel('')
+    ax.tick_params(labelsize=30, direction='out')
+    ax.set(xticklabels=[])
+    plt.setp(ax.spines.values(), linewidth=2)
+    ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (x/1000)))
+
+    # # plt.tight_layout()
+    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    #                "/PaperVersion/" + sv + '.pdf')
+    # pdf.savefig(orientation='landscape')
+    # pdf.close()
+
+    # manager = plt.get_current_fig_manager()
+    # manager.window.showMaximized()
+
+    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+                "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
+                bbox_inches='tight')
+    # plt.cla()
+    # plt.clf()
+    plt.close()
+
+    # plt.show()
+
+quit()
 
 """"
 HEAT MAPS OF SIGNIFICANT FEATURES ON GEOGRAPHICAL MAP
