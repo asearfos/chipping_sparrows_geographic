@@ -50,7 +50,8 @@ Create table of variables we will be using - only 16
 """
 
 items = "`ChippingSparrows_FinalDataCompilation`.`CatalogNo`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`ComparedStatus`," \
+        "`ChippingSparrows_FinalDataCompilation`.`FromDatabase`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`ComparedStatus`," \
         "`ChippingSparrows_FinalDataCompilation`.`Latitude`," \
         "`ChippingSparrows_FinalDataCompilation`.`Longitude`," \
         "`ChippingSparrows_FinalDataCompilation`.`RecordingDay`," \
@@ -58,27 +59,27 @@ items = "`ChippingSparrows_FinalDataCompilation`.`CatalogNo`," \
         "`ChippingSparrows_FinalDataCompilation`.`RecordingYear`," \
         "`ChippingSparrows_FinalDataCompilation`.`RecordingTime`," \
         "`ChippingSparrows_FinalDataCompilation`.`Region`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`AvgNoteDuration_ms`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`AvgNotesFreqModulation_Hz`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`AvgNotesLowerFreq_Hz`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`AvgNotesUpperFreq_Hz`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`AvgSilenceDuration_ms`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`AvgSyllableDuration_ms`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`AvgSyllsFreqModulation_Hz`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`AvgSyllsLowerFreq_Hz`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`AvgSyllsUpperFreq_Hz`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`BoutDuration_ms`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`MeanSyllableStereotypy`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`NumNotesPerSyll`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`NumSyllablePerBoutDuration`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`NumSyllables`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`StdNoteDuration_ms`," \
-        "`Chippies_FinalData_AnalysisOutput_withReExported44100Hz`.`StdNotesFreqModulation_Hz`" \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`AvgNoteDuration_ms`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`AvgNotesFreqModulation_Hz`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`AvgNotesLowerFreq_Hz`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`AvgNotesUpperFreq_Hz`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`AvgSilenceDuration_ms`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`AvgSyllableDuration_ms`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`AvgSyllsFreqModulation_Hz`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`AvgSyllsLowerFreq_Hz`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`AvgSyllsUpperFreq_Hz`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`BoutDuration_ms`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`MeanSyllableStereotypy`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`NumNotesPerSyll`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`NumSyllablePerBoutDuration`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`NumSyllables`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`StdNoteDuration_ms`," \
+        "`Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported`.`StdNotesFreqModulation_Hz`" \
 
 query2 = ("SELECT %s " \
-         "FROM asearfos.Chippies_FinalData_AnalysisOutput_withReExported44100Hz " \
+         "FROM asearfos.Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported " \
          "inner join asearfos.ChippingSparrows_FinalDataCompilation on " \
-         "asearfos.Chippies_FinalData_AnalysisOutput_withReExported44100Hz.CatalogNo = " \
+         "asearfos.Chippies_FinalData_AnalysisOutput_withReChipperedAndReExported.CatalogNo = " \
          "asearfos.ChippingSparrows_FinalDataCompilation.CatalogNo " \
          "where Latitude is not null;" % items)
 
@@ -87,12 +88,12 @@ corrTable['RecordingTime'] = pd.to_datetime(corrTable['RecordingTime']).dt.time
 corrTable['Region'].fillna('mid', inplace=True)
 
 save_path = 'C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation' + \
-            '/FinalDataframe_CombinedTables_withReExported44100Hz.csv'
+            '/FinalDataframe_CombinedTables_withReChipper_thenWithReExportedAs44100Hz.csv'
 corrTable.to_csv(save_path, sep=',', header=True, index=False)
 
 # log transform (natural log) unless log transform made the data more skewed (JB test - see normality spreadsheet in
 # google docs)
-col_to_skip = ['CatalogNo', 'ComparedStatus', 'Latitude', 'Longitude', 'RecordingDay', 'RecordingMonth',
+col_to_skip = ['CatalogNo', 'FromDatabase', 'ComparedStatus', 'Latitude', 'Longitude', 'RecordingDay', 'RecordingMonth',
                'RecordingYear', 'RecordingTime', 'Region', 'MeanSyllableStereotypy', 'StdNotesFreqModulation_Hz']
 
 corrTable_norm = corrTable.copy()
@@ -101,7 +102,7 @@ for var in corrTable_norm.columns:
                 corrTable_norm[var] = corrTable_norm[var].apply(np.log)
 
 save_path = 'C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation' + \
-            '/FinalDataframe_CombinedTables_withReExported44100Hz_LogTransformed.csv'
+            '/FinalDataframe_CombinedTables_withReChipper_thenWithReExportedAs44100Hz_LogTransformed.csv'
 corrTable_norm.to_csv(save_path, sep=',', header=True, index=False)
 
 
