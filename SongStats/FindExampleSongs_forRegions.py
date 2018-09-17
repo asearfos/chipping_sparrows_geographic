@@ -4,12 +4,12 @@ import pandas as pd
 Load data and organize/subset wilcoxon rank sums test and heatmaps overlayed on geographical maps 
 """
 data_path = 'C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation' + \
-            '/FinalDataframe_CombinedTables_LogTransformed.csv'
+            '/FinalDataframe_CombinedTables_withReChipper_thenWithReExportedAs44100Hz_LogTransformed.csv'
 log_song_data = pd.DataFrame.from_csv(data_path, header=0, index_col=None)
 
 log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['unique', 'use'])].copy().reset_index(
     drop=True)
-col_to_skip = ['ComparedStatus', 'RecordingDay', 'RecordingMonth', 'RecordingYear', 'RecordingTime']
+col_to_skip = ['ComparedStatus', 'FromDatabase', 'RecordingDay', 'RecordingMonth', 'RecordingYear', 'RecordingTime']
 data_subset = log_song_data_unique.drop(col_to_skip, axis=1)
 
 # use only east, west and south data
