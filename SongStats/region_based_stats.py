@@ -1,5 +1,4 @@
 import pandas as pd
-import pymysql as sql
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_pdf import PdfPages
@@ -17,12 +16,13 @@ from matplotlib.ticker import FuncFormatter
 Load data and organize/subset wilcoxon rank sums test and heatmaps overlayed on geographical maps 
 """
 data_path = 'C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation' + \
-            '/FinalDataframe_CombinedTables_LogTransformed.csv'
+            '/FinalDataframe_CombinedTables_withReChipper_thenWithReExportedAs44100Hz_LogTransformed.csv'
 log_song_data = pd.DataFrame.from_csv(data_path, header=0, index_col=None)
 
 log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['unique', 'use'])].copy().reset_index(
     drop=True)
-col_to_skip = ['CatalogNo', 'ComparedStatus', 'RecordingDay', 'RecordingMonth', 'RecordingYear', 'RecordingTime']
+col_to_skip = ['CatalogNo', 'FromDatabase', 'ComparedStatus', 'RecordingDay', 'RecordingMonth', 'RecordingYear',
+               'RecordingTime']
 data_subset = log_song_data_unique.drop(col_to_skip, axis=1)
 
 # use only east, west and south data for wilcoxon rank sums
@@ -36,7 +36,7 @@ data_for_heatmaps = data_subset.copy()
 Discrete Stats Tests using Regions:
 Wilcoxon Rank sums for regions: east, west, south and the 16 song variables
 """
-with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData/BoxPlots_Norm/PaperVersion'
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/BoxPlots_Norm'
           '/region_WilcoxonRanksums.csv', 'wb') as file:
     filewriter = csv.writer(file, delimiter=',')
     filewriter.writerow(['Song Variable', 'EW Wilcoxon p', 'EW p-value', 'ES Wilcoxon p', 'ES p-value', 'WS Wilcoxon p',
@@ -50,7 +50,6 @@ with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalDa
         filewriter.writerow([sv, ranksums(e, w)[0], ranksums(e, w)[1], ranksums(e, s)[0], ranksums(e, s)[1],
                              ranksums(w, s)[0], ranksums(w, s)[1]])
 
-quit()
 """"
 Box plot of results
 """
@@ -75,7 +74,8 @@ log_var = {3: 'ms', 7: 'ms', 8: 'ms', 14: 'number', 16: 'number', 17: 'ms'}
 log_convert_var = {9: 'kHz', 4: 'kHz', 5: 'kHz', 6: 'kHz', 10: 'kHz', 11: 'kHz', 12: 'seconds'}
 log_convert_inverse_var = {15: 'number/second'}
 no_log = {13: '%'}
-no_log_convert = {18: 'Hz'}
+no_log_convert = {18: 'kHz'}
+print(data_for_wrs.columns)
 
 # take e^x for y-axis
 for key, value in log_var.items():
@@ -102,7 +102,7 @@ for key, value in log_var.items():
     ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x))))
 
     # # plt.tight_layout()
-    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
     #                "/PaperVersion/" + sv + '.pdf')
     # pdf.savefig(orientation='landscape')
     # pdf.close()
@@ -110,7 +110,7 @@ for key, value in log_var.items():
     # manager = plt.get_current_fig_manager()
     # manager.window.showMaximized()
 
-    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
                 "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
                 bbox_inches='tight')
     # plt.cla()
@@ -144,7 +144,7 @@ for key, value in log_convert_var.items():
     ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x)/1000)))
 
     # # plt.tight_layout()
-    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
     #                "/PaperVersion/" + sv + '.pdf')
     # pdf.savefig(orientation='landscape')
     # pdf.close()
@@ -152,7 +152,7 @@ for key, value in log_convert_var.items():
     # manager = plt.get_current_fig_manager()
     # manager.window.showMaximized()
 
-    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
                 "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
                 bbox_inches='tight')
     # plt.cla()
@@ -186,7 +186,7 @@ for key, value in log_convert_inverse_var.items():
     ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x)*1000)))
 
     # # plt.tight_layout()
-    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
     #                "/PaperVersion/" + sv + '.pdf')
     # pdf.savefig(orientation='landscape')
     # pdf.close()
@@ -194,7 +194,7 @@ for key, value in log_convert_inverse_var.items():
     # manager = plt.get_current_fig_manager()
     # manager.window.showMaximized()
 
-    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
                 "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
                 bbox_inches='tight')
     # plt.cla()
@@ -228,7 +228,7 @@ for key, value in no_log.items():
     ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % x))
 
     # # plt.tight_layout()
-    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
     #                "/PaperVersion/" + sv + '.pdf')
     # pdf.savefig(orientation='landscape')
     # pdf.close()
@@ -236,7 +236,7 @@ for key, value in no_log.items():
     # manager = plt.get_current_fig_manager()
     # manager.window.showMaximized()
 
-    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
                 "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
                 bbox_inches='tight')
     # plt.cla()
@@ -270,7 +270,7 @@ for key, value in no_log_convert.items():
     ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (x/1000)))
 
     # # plt.tight_layout()
-    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
     #                "/PaperVersion/" + sv + '.pdf')
     # pdf.savefig(orientation='landscape')
     # pdf.close()
@@ -278,7 +278,7 @@ for key, value in no_log_convert.items():
     # manager = plt.get_current_fig_manager()
     # manager.window.showMaximized()
 
-    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/BoxPlots_Norm"
+    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
                 "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
                 bbox_inches='tight')
     # plt.cla()
@@ -287,11 +287,12 @@ for key, value in no_log_convert.items():
 
     # plt.show()
 
-quit()
 
 """"
 HEAT MAPS OF SIGNIFICANT FEATURES ON GEOGRAPHICAL MAP
 """
+# on 9/17/2018 had trouble running this due to the np.log(songChar)
+# not sure why this ran before but not now -- don't need anyways
 # for songChar in data_for_heatmaps.columns[3:]:
 #     # plt.close('all')
 #
@@ -307,8 +308,7 @@ HEAT MAPS OF SIGNIFICANT FEATURES ON GEOGRAPHICAL MAP
 #     m.drawmapboundary(fill_color='w', color='none')
 #
 #     n = m.scatter(data_for_heatmaps['Longitude'], data_for_heatmaps['Latitude'], s=100, alpha=0.6,
-#                   c=data_for_heatmaps[np.log(songChar)],
-#               cmap='seismic', edgecolor='black', lw='0.5')
+#                   c=data_for_heatmaps[np.log(songChar)], cmap='seismic', edgecolor='black', lw='0.5')
 #
 #     divider = make_axes_locatable(plt.gca())
 #     cax = divider.append_axes("right", "2%", pad="1%")
@@ -317,96 +317,95 @@ HEAT MAPS OF SIGNIFICANT FEATURES ON GEOGRAPHICAL MAP
 #
 #     plt.tight_layout()
 #
-#     pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/GeoPlots_Norm"
-#                    "/PaperVersion/" + songChar + '.pdf')
+#     pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
+#                    "/GeoPlots_Norm/" + songChar + '.pdf')
 #
 #     pdf.savefig(dpi=fig.dpi, orientation='landscape')
 #     pdf.close()
 #
 #     # plt.show()
-#     # plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData/GeoPlots/" + songChar + '.png',
+#     # plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/GeoPlots/" + songChar + '.png',
 #     #             type='png', dpi=fig.dpi, bbox_inches='tight')
 
 
 """"
 Binned heatmap showing geographical distribution of data
 """
-#
-# # plot locations of all the song data collected --> this includes for all regions the unique songs and all songs
-# # chosen as use for possible duplicates
-#
-# my_dpi = 96
-# fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
-#
-# # make the background map
-# m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
-# m.drawcoastlines(color='k', linewidth=1.5)
-# m.drawcountries(color='k', linewidth=1.5)
-# m.drawstates(color='gray')
-# m.drawmapboundary(fill_color='w', color='none')
-#
-# hb = m.hexbin(data_for_heatmaps['Longitude'], data_for_heatmaps['Latitude'], bins='log', mincnt=1, gridsize=50,
-#            cmap='cool')
-# cb = m.colorbar()
-#
-# ticks_number = []
-# t_old = []
-# for t in cb.ax.get_yticklabels():
-#     t_old.append(float(t.get_text()))
-#     new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
-#     ticks_number.append(new_tick)
-# cb.set_ticks(t_old)
-# cb.set_ticklabels(["%.2f" % e for e in ticks_number])
-# cb.ax.tick_params(labelsize=25)
-# cb.set_label('Number', size=25)
-#
-# plt.tight_layout()
-#
-# pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\GeoSpreadOfRecordings/" +
-#                'AllRecordingLocations_UniqueUse_logBins' + '.pdf')
-#
-# pdf.savefig(dpi=fig.dpi, orientation='landscape')
-# pdf.close()
-#
-# plt.show()
-#
-# # plot locations of song data used for computations--> this includes all unique songs and all songs chosen as use for
-# # possible duplicates but only for East and West and South (excludes mid)
-# my_dpi = 96
-# fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
-#
-# # make the background map
-# m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
-# m.drawcoastlines(color='k', linewidth=1.5)
-# m.drawcountries(color='k', linewidth=1.5)
-# m.drawstates(color='gray')
-# m.drawmapboundary(fill_color='w', color='none')
-#
-# m.hexbin(data_for_wrs['Longitude'], data_for_wrs['Latitude'], bins='log', mincnt=1, gridsize=50, cmap='cool')
-# cb = m.colorbar()
-#
-# ticks_number = []
-# t_old = []
-# for t in cb.ax.get_yticklabels():
-#     t_old.append(float(t.get_text()))
-#     new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
-#     ticks_number.append(new_tick)
-# cb.set_ticks(t_old)
-# cb.set_ticklabels(["%.2f" % e for e in ticks_number])
-# cb.ax.tick_params(labelsize=25)
-# cb.set_label('Number', size=25)
-#
-# plt.tight_layout()
-#
-# pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\GeoSpreadOfRecordings/" +
-#                'EastWestSouthRecordingLocations_UniqueUse_logBins' + '.pdf')
-#
-# pdf.savefig(dpi=fig.dpi, orientation='landscape')
-# pdf.close()
-#
-# plt.show()
 
-quit()
+# plot locations of all the song data collected --> this includes for all regions the unique songs and all songs
+# chosen as use for possible duplicates
+
+my_dpi = 96
+fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
+
+# make the background map
+m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
+m.drawcoastlines(color='k', linewidth=1.5)
+m.drawcountries(color='k', linewidth=1.5)
+m.drawstates(color='gray')
+m.drawmapboundary(fill_color='w', color='none')
+
+hb = m.hexbin(data_for_heatmaps['Longitude'], data_for_heatmaps['Latitude'], bins='log', mincnt=1, gridsize=50,
+           cmap='cool')
+cb = m.colorbar()
+
+ticks_number = []
+t_old = []
+for t in cb.ax.get_yticklabels():
+    t_old.append(float(t.get_text()))
+    new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
+    ticks_number.append(new_tick)
+cb.set_ticks(t_old)
+cb.set_ticklabels(["%.2f" % e for e in ticks_number])
+cb.ax.tick_params(labelsize=25)
+cb.set_label('Number', size=25)
+
+plt.tight_layout()
+
+pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\GeoSpreadOfRecordings/" +
+               'AllRecordingLocations_UniqueUse_logBins' + '.pdf')
+
+pdf.savefig(dpi=fig.dpi, orientation='landscape')
+pdf.close()
+
+plt.show()
+
+# plot locations of song data used for computations--> this includes all unique songs and all songs chosen as use for
+# possible duplicates but only for East and West and South (excludes mid)
+my_dpi = 96
+fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
+
+# make the background map
+m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
+m.drawcoastlines(color='k', linewidth=1.5)
+m.drawcountries(color='k', linewidth=1.5)
+m.drawstates(color='gray')
+m.drawmapboundary(fill_color='w', color='none')
+
+m.hexbin(data_for_wrs['Longitude'], data_for_wrs['Latitude'], bins='log', mincnt=1, gridsize=50, cmap='cool')
+cb = m.colorbar()
+
+ticks_number = []
+t_old = []
+for t in cb.ax.get_yticklabels():
+    t_old.append(float(t.get_text()))
+    new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
+    ticks_number.append(new_tick)
+cb.set_ticks(t_old)
+cb.set_ticklabels(["%.2f" % e for e in ticks_number])
+cb.ax.tick_params(labelsize=25)
+cb.set_label('Number', size=25)
+
+plt.tight_layout()
+
+pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\GeoSpreadOfRecordings/" +
+               'EastWestSouthRecordingLocations_UniqueUse_logBins' + '.pdf')
+
+pdf.savefig(dpi=fig.dpi, orientation='landscape')
+pdf.close()
+
+plt.show()
+
 
 """
 Downsampling of data to check we get the same results - only one random sample from each lat/long
@@ -451,7 +450,7 @@ cb.set_label('Number', size=25)
 
 plt.tight_layout()
 
-pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData\GeoSpreadOfRecordings/" +
+pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\GeoSpreadOfRecordings/" +
                'EastWestSouthRecordingLocations_UniqueUse_downsampled_logBins' + '.pdf')
 
 pdf.savefig(dpi=fig.dpi, orientation='landscape')
@@ -459,29 +458,29 @@ pdf.close()
 
 # plt.show()
 
-# ranksums_EW = pd.DataFrame(index=range(1000), columns=[data_for_wrs_rounded.columns[3:]])
-# ranksums_ES = pd.DataFrame(index=range(1000), columns=[data_for_wrs_rounded.columns[3:]])
-# ranksums_WS = pd.DataFrame(index=range(1000), columns=[data_for_wrs_rounded.columns[3:]])
-# for r in range(1000):
-#     sample = data_for_wrs_rounded.groupby(['Latitude', 'Longitude']).apply(lambda x: x.sample(1)).reset_index(drop=True)
-#
-#     for sv in sample.columns[3:]:
-#         e = sample.loc[sample['Region'] == 'east', sv]
-#         w = sample.loc[sample['Region'] == 'west', sv]
-#         s = sample.loc[sample['Region'] == 'south', sv]
-#
-#         ranksums_EW.iloc[r][sv] = ranksums(e, w)[1]
-#         ranksums_ES.iloc[r][sv] = ranksums(e, s)[1]
-#         ranksums_WS.iloc[r][sv] = ranksums(w, s)[1]
-#
-# downsampling_results = pd.concat([ranksums_EW.max(axis=0), ranksums_EW.min(axis=0), ranksums_ES.max(axis=0),
-#                                   ranksums_ES.min(axis=0), ranksums_WS.max(axis=0), ranksums_WS.min(axis=0)],
-#                                  axis=1, keys=['EW_max', 'EW_min', 'ES_max', 'ES_min', 'WS_max', 'WS_min'])
-# downsampling_results.to_csv('C:/Users/abiga/Box '
-#                             'Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData/BoxPlots_Norm/PaperVersion'
-#                             '/region_WilcoxonRanksums_downsampled.csv')
-#
-#
-#
-#
-#
+ranksums_EW = pd.DataFrame(index=range(1000), columns=[data_for_wrs_rounded.columns[3:]])
+ranksums_ES = pd.DataFrame(index=range(1000), columns=[data_for_wrs_rounded.columns[3:]])
+ranksums_WS = pd.DataFrame(index=range(1000), columns=[data_for_wrs_rounded.columns[3:]])
+for r in range(1000):
+    sample = data_for_wrs_rounded.groupby(['Latitude', 'Longitude']).apply(lambda x: x.sample(1)).reset_index(drop=True)
+
+    for sv in sample.columns[3:]:
+        e = sample.loc[sample['Region'] == 'east', sv]
+        w = sample.loc[sample['Region'] == 'west', sv]
+        s = sample.loc[sample['Region'] == 'south', sv]
+
+        ranksums_EW.iloc[r][sv] = ranksums(e, w)[1]
+        ranksums_ES.iloc[r][sv] = ranksums(e, s)[1]
+        ranksums_WS.iloc[r][sv] = ranksums(w, s)[1]
+
+downsampling_results = pd.concat([ranksums_EW.max(axis=0), ranksums_EW.min(axis=0), ranksums_ES.max(axis=0),
+                                  ranksums_ES.min(axis=0), ranksums_WS.max(axis=0), ranksums_WS.min(axis=0)],
+                                 axis=1, keys=['EW_max', 'EW_min', 'ES_max', 'ES_min', 'WS_max', 'WS_min'])
+downsampling_results.to_csv('C:/Users/abiga/Box '
+                            'Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/BoxPlots_Norm'
+                            '/region_WilcoxonRanksums_downsampled.csv')
+
+
+
+
+
