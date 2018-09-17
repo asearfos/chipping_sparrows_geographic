@@ -10,7 +10,7 @@ from scipy.stats import ranksums
 Load data and organize/subset for testing changes over years
 """
 data_path = 'C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation' + \
-            '/FinalDataframe_CombinedTables_LogTransformed.csv'
+            '/FinalDataframe_CombinedTables_withReChipper_thenWithReExportedAs44100Hz_LogTransformed.csv'
 log_song_data = pd.DataFrame.from_csv(data_path, header=0, index_col=None)
 
 # remove all duplicate birdsongs
@@ -19,7 +19,7 @@ log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['
     drop=True)
 
 # drop any metadata that is not needed for this analysis
-col_to_skip = ['CatalogNo', 'ComparedStatus', 'RecordingYear', 'RecordingTime']
+col_to_skip = ['CatalogNo', 'FromDatabase','ComparedStatus', 'RecordingYear', 'RecordingTime']
 data_for_seasons = log_song_data_unique.drop(col_to_skip, axis=1).dropna(axis=0)
 
 # divide as before and after summer solstice (June 21st, do not specify by year)
@@ -60,8 +60,8 @@ m.scatter(after_solstice['Longitude'], after_solstice['Latitude'], latlon=True, 
 
 plt.tight_layout()
 
-# pdf = PdfPages("C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData/SeasonsAnalysis/" +
-#                'Seasons_spreadOfBeforeAfterData' + '.pdf')
+plt.savefig("C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported"
+            "/SeasonsAnalysis/Seasons_spreadOfBeforeAfterData.pdf", type='pdf', dpi=fig.dpi, bbox_inches='tight')
 
 # pdf.savefig(dpi=fig.dpi, orientation='landscape')
 # pdf.close()
@@ -72,7 +72,7 @@ plt.show()
 Wilcoxon Ranksums (all regions and for east and west separately --> Print out results to csv
 """
 
-with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData/SeasonsAnalysis'
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/SeasonsAnalysis'
           '/season_WilcoxonRanksums.csv', 'wb') as file:
     filewriter = csv.writer(file, delimiter=',')
     filewriter.writerow(['Song Variable', 'All Regions w', 'All Regions p-value', 'East w', 'East p-value', 'West w',
