@@ -51,19 +51,19 @@ m.drawcountries(color='k', linewidth=1)
 m.drawstates(color='gray')
 m.drawmapboundary(fill_color='w', color='none')
 
-# #plot points at sampling locations with area proportional to number of samples at the location --> mtDNA
+# #plot points at sampling locations
 # m.scatter(before_1984['Longitude'], before_1984['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
 #           edgecolor='black', linewidth=1)
 #
-# #plot points at sampling locations with area proportional to number of samples at the location --> COI
+# #plot points at sampling locations
 # m.scatter(after_1984['Longitude'], after_1984['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
 #           edgecolor='black', linewidth=1)
 
-#plot points at sampling locations with area proportional to number of samples at the location --> mtDNA
+#plot points at sampling locations
 m.scatter(before_1959['Longitude'], before_1959['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
           edgecolor='black', linewidth=1)
 
-# #plot points at sampling locations with area proportional to number of samples at the location --> COI
+# #plot points at sampling locations
 # m.scatter(after_1959['Longitude'], after_1959['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
 #           edgecolor='black', linewidth=1)
 

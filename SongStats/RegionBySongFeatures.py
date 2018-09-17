@@ -227,11 +227,11 @@ for i, item in enumerate(preds_mid_colors):
     if item == 1:
         preds_mid_colors[i] = '#33a02c'
 
-#plot points at sampling locations with area proportional to number of samples at the location --> mtDNA
+#plot points at sampling locations
 m.scatter(long_test, lat_test, latlon=True,
           s=100, label=None, zorder=10, c=tuple(preds_colors), edgecolor='black', linewidth=1)
 
-#plot points at sampling locations with area proportional to number of samples at the location --> COI
+#plot points at sampling locations
 m.scatter(locations_mid['Longitude'], locations_mid['Latitude'], latlon=True,
           s=100, label=None, zorder=10, c=tuple(preds_mid_colors), edgecolor='black', linewidth=1)
 

@@ -19,7 +19,7 @@ log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['
     drop=True)
 
 # drop any metadata that is not needed for this analysis
-col_to_skip = ['CatalogNo', 'FromDatabase','ComparedStatus', 'RecordingYear', 'RecordingTime']
+col_to_skip = ['CatalogNo', 'FromDatabase', 'ComparedStatus', 'RecordingYear', 'RecordingTime']
 data_for_seasons = log_song_data_unique.drop(col_to_skip, axis=1).dropna(axis=0)
 
 # divide as before and after summer solstice (June 21st, do not specify by year)
@@ -50,11 +50,11 @@ m.drawcountries(color='k', linewidth=1)
 m.drawstates(color='gray')
 m.drawmapboundary(fill_color='w', color='none')
 
-#plot points at sampling locations with area proportional to number of samples at the location --> mtDNA
+#plot points at sampling locations
 m.scatter(before_solstice['Longitude'], before_solstice['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
           edgecolor='black', linewidth=1)
 
-#plot points at sampling locations with area proportional to number of samples at the location --> COI
+#plot points at sampling locations
 m.scatter(after_solstice['Longitude'], after_solstice['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
           edgecolor='black', linewidth=1)
 
