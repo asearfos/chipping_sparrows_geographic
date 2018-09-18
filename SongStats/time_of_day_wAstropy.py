@@ -20,7 +20,6 @@ table = ascii.read("C:/Users/abiga\Box "
                    delimiter=',')
 
 relative_sunrise = []
-relative_noon = []
 relative_civil = []
 relative_nautical = []
 relative_astronomical = []
@@ -59,13 +58,11 @@ for i in range(len(table)):
                 nautical = obs.twilight_morning_nautical(astropy_time, which='nearest')
 
                 if noon < astropy_time:
-                    relative_noon.append('after noon')
-                    relative_sunrise.append('after sunrise')
-                    relative_astronomical.append('after astronomical')
-                    relative_civil.append('after civil')
-                    relative_nautical.append('after nautical')
+                    relative_sunrise.append('after noon')
+                    relative_astronomical.append('after noon')
+                    relative_civil.append('after noon')
+                    relative_nautical.append('after noon')
                 else:
-                    relative_noon.append('before noon')
                     if sunrise < astropy_time:
                         relative_sunrise.append('after sunrise')
                     else:
@@ -84,29 +81,24 @@ for i in range(len(table)):
                         relative_astronomical.append('before astronomical')
 
             except ValueError:
-                relative_noon.append('--')
                 relative_sunrise.append('--')
                 relative_astronomical.append('--')
                 relative_civil.append('--')
                 relative_nautical.append('--')
         else:
-            relative_noon.append('--')
             relative_sunrise.append('--')
             relative_astronomical.append('--')
             relative_civil.append('--')
             relative_nautical.append('--')
     else:
-        relative_noon.append('--')
         relative_sunrise.append('--')
         relative_astronomical.append('--')
         relative_civil.append('--')
         relative_nautical.append('--')
 
 
-table = Table([table['CatalogNo'], relative_sunrise, relative_civil, relative_nautical, relative_astronomical,
-               relative_noon], names=('CatalogNo', 'Sunrise', 'CivilTwilight', 'NauticalTwilight',
-                                      'AstronomicalTwilight', 'Noon'))
-print(table)
+table = Table([table['CatalogNo'], relative_sunrise, relative_civil, relative_nautical, relative_astronomical],
+              names=('CatalogNo', 'Sunrise', 'CivilTwilight', 'NauticalTwilight', 'AstronomicalTwilight'))
 with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported'
           '/TimeAnalysis/FinalData_LogTransformed_relativeToSunriseTwilightsNoon.csv', 'wb') as outfile:
     ascii.write(table, format='csv', output=outfile)
