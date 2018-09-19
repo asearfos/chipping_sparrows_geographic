@@ -1,6 +1,5 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotl
 import numpy as np
 import seaborn as sns; sns.set()
 import csv
@@ -23,7 +22,7 @@ log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['
 col_to_skip = ['CatalogNo', 'ComparedStatus', 'RecordingDay', 'RecordingMonth', 'RecordingYear', 'RecordingTime']
 data_for_source = log_song_data_unique.drop(col_to_skip, axis=1).dropna(axis=0)
 
-#divide up by year
+#divide up by database
 fromXC = data_for_source[data_for_source.FromDatabase == 'Xeno-Canto']
 fromML = data_for_source.loc[data_for_source['FromDatabase'].isin(['Macaulay Library', 'eBird'])].copy().reset_index()
 
