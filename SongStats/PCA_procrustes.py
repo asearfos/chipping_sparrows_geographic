@@ -1,5 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 import numpy as np
 import seaborn as sns; sns.set()
 import csv
@@ -47,15 +50,17 @@ songVarTable_forPCA = StandardScaler().fit_transform(data_for_PCA.drop(['Region'
 # Calculate the first 2 PC's
 pca = PCA(n_components=2)
 PCs_nComp = pca.fit_transform(songVarTable_forPCA)
-principalDf = pd.DataFrame(data=PCs_nComp, columns=['PC1', 'PC2'])
+principalDf = pd.DataFrame(data=-1*PCs_nComp, columns=['PC1', 'PC2'])  #multiply the PC1 and PC2 by -1 so that they
+# graph with east on the right and west on the left.
 finalDf = pd.concat([data_for_PCA[['Region', 'Latitude', 'Longitude']], principalDf], axis=1)
 print(pca.explained_variance_ratio_)
+
 
 """
 PC1 and PC2 correlation to song variables
 """
-with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/PCA_Procrustes/PCA_songVar_corr'
-          '.csv', 'wb') as file:
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported'
+          '/PCA_Procrustes/PCA_songVar_corr.csv', 'wb') as file:
     filewriter = csv.writer(file, delimiter=',')
     filewriter.writerow(['Song Variable',
                          'PC1 r',
@@ -74,9 +79,9 @@ Plotting settings
 
 sns.set(style='white',
         rc={"font.style": "normal",
-            'axes.labelsize': 20,
-            'xtick.labelsize': 12,
-            'ytick.labelsize': 12,
+            'axes.labelsize': 34,
+            'xtick.labelsize': 24,
+            'ytick.labelsize': 24,
             'figure.figsize': (11.69, 8.27)})
 
 colors = {'east': '#1f78b4', 'west': '#33a02c', 'mid': '#542788', 'south': '#f17300'}
@@ -91,7 +96,7 @@ for group in finalDf.Region.unique():
     PC1_mean = np.mean(sdata['PC1'])
     PC2_mean = np.mean(sdata['PC2'])
     cov = np.cov(sdata['PC1'], sdata['PC2'])
-    ax0.scatter(sdata['PC1'], sdata['PC2'], color=colors.get(group), alpha=0.6, s=50, label=group)
+    ax0.scatter(sdata['PC1'], sdata['PC2'], color=colors.get(group), alpha=0.6, s=50, label=group, edgecolors=None, linewidth=0)
     # ax0.add_artist(e)
 
 xlim = ax0.get_xlim()
@@ -103,8 +108,8 @@ plt.show()
 
 
 # save figure
-fig0.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\PCA_Procrustes'
-                 '\PCA_scatter_PC1PC2AllRegions_forPaper.pdf')
+fig0.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported'
+             '\PCA_Procrustes\PCA_scatter_PC1PC2AllRegions_forPaper.pdf', transparent=True)
 
 """"
 Plot scatter with Confidence Ellipses
@@ -137,7 +142,7 @@ for group in ['east', 'west']:
     PC1_mean = np.mean(sdata['PC1'])
     PC2_mean = np.mean(sdata['PC2'])
     cov = np.cov(sdata['PC1'], sdata['PC2'])
-    ax1.scatter(sdata['PC1'], sdata['PC2'], color=colors.get(group), alpha=0.6, s=50, label=group)
+    ax1.scatter(sdata['PC1'], sdata['PC2'], color=colors.get(group), alpha=0.6, s=50, label=group, edgecolors=None, linewidth=0)
     e = get_cov_ellipse(cov, (PC1_mean, PC2_mean), 2,
                         fc=colors.get(group), alpha=0.4)
     ax1.add_artist(e)
@@ -150,8 +155,8 @@ ax1.legend(loc='upper left')
 plt.show()
 
 # save figure
-fig1.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\PCA_Procrustes'
-                 '\PCA_scatter_PC1PC2EastWestEllipses_forPaper.pdf')
+fig1.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported'
+             '\PCA_Procrustes\PCA_scatter_PC1PC2EastWestEllipses_forPaper.pdf', transparent=True)
 
 """"
 Plot points at mean locations proportional to number of samples
@@ -163,7 +168,8 @@ for group in finalDf.Region.unique()[::-1]:
     PC1_mean = np.mean(sdata['PC1'])
     PC2_mean = np.mean(sdata['PC2'])
     cov = np.cov(sdata['PC1'], sdata['PC2'])
-    ax2.scatter(PC1_mean, PC2_mean, color=colors.get(group), s=2*len(sdata['PC1']), label=group)
+    ax2.scatter(PC1_mean, PC2_mean, color=colors.get(group), s=10*len(sdata['PC1']), label=group, edgecolors=None,
+                linewidth=0)
 
 ax2.set_xlim(xlim[0], xlim[1])
 ax2.set_ylim(ylim[0], ylim[1])
@@ -172,8 +178,8 @@ ax2.set_ylabel('PC2')
 plt.show()
 
 # save figure
-fig2.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\PCA_Procrustes'
-                 '\PCA_scatter_MeanRegionLocations_forPaper.pdf')
+fig2.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported'
+             '\PCA_Procrustes\PCA_scatter_MeanRegionLocations_forPaper.pdf', transparent=True)
 
 
 """
@@ -181,8 +187,7 @@ Procrustes analysis
 """
 # run procrustes
 stand_latlong, oriented_pcs, disparity_of_data = spatial.procrustes(data1=finalDf[['Longitude', 'Latitude']],
-data2=finalDf[[
-    'PC1', 'PC2']])
+                                                                    data2=finalDf[['PC1', 'PC2']])
 print('my disparity: ', disparity_of_data)
 
 # run procrustes 100,000x to get empirical p-value
