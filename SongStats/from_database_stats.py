@@ -52,7 +52,8 @@ m.scatter(fromML['Longitude'], fromML['Latitude'], latlon=True, label=None, zord
 plt.tight_layout()
 
 plt.savefig("C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported"
-            "/DatabaseAnalysis/Database_geoSpreadOfData.pdf", type='pdf', dpi=fig.dpi, bbox_inches='tight')
+            "/DatabaseAnalysis/Database_geoSpreadOfData_XCLightMLeBirdDark.pdf", type='pdf', dpi=fig.dpi,
+            bbox_inches='tight')
 
 plt.show()
 
@@ -62,7 +63,7 @@ Wilcoxon Ranksums
 with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported'
           '/DatabaseAnalysis/database_WilcoxonRanksums.csv', 'wb') as file:
     filewriter = csv.writer(file, delimiter=',')
-    filewriter.writerow(['Song Variable', 'All Regions w', 'All Regions p-value'])
+    filewriter.writerow(['Song Variable', 'XC vs MLeBird w', 'XC vs MLeBird p-value'])
 
     for sv in (['Longitude'] + data_for_source.columns[4:].tolist()):
         b = np.asarray(fromXC[sv])
