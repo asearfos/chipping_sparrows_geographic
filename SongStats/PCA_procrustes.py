@@ -50,7 +50,9 @@ songVarTable_forPCA = StandardScaler().fit_transform(data_for_PCA.drop(['Region'
 # Calculate the first 2 PC's
 pca = PCA(n_components=2)
 PCs_nComp = pca.fit_transform(songVarTable_forPCA)
-principalDf = pd.DataFrame(data=-1*PCs_nComp, columns=['PC1', 'PC2'])  #multiply the PC1 and PC2 by -1 so that they
+principalDf = pd.DataFrame(data=PCs_nComp, columns=['PC1', 'PC2'])  #multiply the PC1 and PC2 by -1 so that they
+principalDf['PC1'] = -1*principalDf['PC1']
+
 # graph with east on the right and west on the left.
 finalDf = pd.concat([data_for_PCA[['Region', 'Latitude', 'Longitude']], principalDf], axis=1)
 print(pca.explained_variance_ratio_)
