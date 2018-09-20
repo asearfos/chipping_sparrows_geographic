@@ -29,7 +29,6 @@ after_1984 = data_for_year[data_for_year.RecordingYear >= 1984]
 before_1959 = data_for_year[data_for_year.RecordingYear < 1959]
 after_1959 = data_for_year[data_for_year.RecordingYear >= 1959]
 
-
 """
 Histogram plot of the number of recordings per year
 """
@@ -51,31 +50,31 @@ m.drawcountries(color='k', linewidth=1)
 m.drawstates(color='gray')
 m.drawmapboundary(fill_color='w', color='none')
 
+# # #plot points at sampling locations
+# m.scatter(before_1984['Longitude'], before_1984['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
+#           edgecolor='black', linewidth=1)
+#
 # #plot points at sampling locations
-m.scatter(before_1984['Longitude'], before_1984['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
+# m.scatter(after_1984['Longitude'], after_1984['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
+#           edgecolor='black', linewidth=1)
+#
+# plt.tight_layout()
+#
+# plt.savefig("C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported"
+#             "/YearAnalysis/Year_spreadOfDataBeforeAndAfter1984.pdf", type='pdf', dpi=fig.dpi, bbox_inches='tight')
+
+# plot points at sampling locations
+m.scatter(before_1959['Longitude'], before_1959['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
           edgecolor='black', linewidth=1)
 
 #plot points at sampling locations
-m.scatter(after_1984['Longitude'], after_1984['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
+m.scatter(after_1959['Longitude'], after_1959['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
           edgecolor='black', linewidth=1)
 
 plt.tight_layout()
 
 plt.savefig("C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported"
             "/YearAnalysis/Year_spreadOfDataBeforeAndAfter1959.pdf", type='pdf', dpi=fig.dpi, bbox_inches='tight')
-
-# # plot points at sampling locations
-# m.scatter(before_1959['Longitude'], before_1959['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
-#           edgecolor='black', linewidth=1)
-#
-# #plot points at sampling locations
-# m.scatter(after_1959['Longitude'], after_1959['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
-#           edgecolor='black', linewidth=1)
-#
-# plt.tight_layout()
-#
-# plt.savefig("C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported"
-#             "/YearAnalysis/Year_spreadOfDataBeforeAndAfter1959.pdf", type='pdf', dpi=fig.dpi, bbox_inches='tight')
 
 # pdf.savefig(dpi=fig.dpi, orientation='landscape')
 # pdf.close()
@@ -139,3 +138,40 @@ with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalDa
         a_w = np.asarray(after_1959.loc[after_1959['Region'] == 'west', sv])
         filewriter.writerow([sv, ranksums(b_e, b_w)[0], ranksums(b_e, b_w)[1],
                              ranksums(a_e, a_w)[0], ranksums(a_e, a_w)[1]])
+
+
+"""
+Box Plot for 'MeanSyllableStereotypy' for signal type
+"""
+
+data_for_year['1984'] = np.where(data_for_year['RecordingYear'] < 1984, 'before', 'after')
+data_for_year['1959'] = np.where(data_for_year['RecordingYear'] < 1959, 'before', 'after')
+
+sv = 'MeanSyllableStereotypy'
+
+for yr in ['1984', '1959']:
+    fig = plt.figure(figsize=(7, 11))
+    sns.set(style='white')
+    ax = sns.boxplot(x=yr, y=sv, data=data_for_year[[yr, sv]], color='None',
+                     fliersize=0, width=0.5, linewidth=2, order=['before', 'after'])
+    ax = sns.stripplot(x=yr, y=sv, data=data_for_year[[yr, sv]],
+                       order=['before', 'after'],
+                       palette=['gray', 'black'], size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None,
+                       linewidth=0)
+
+    # Make the boxplot fully transparent
+    for patch in ax.artists:
+        r, g, b, a = patch.get_facecolor()
+        patch.set_facecolor((r, g, b, 0))
+
+    ax.set_ylabel('Mean Stereotypy of Repeated Syllables (%)', fontsize=30)
+    ax.set_xlabel('')
+    ax.tick_params(labelsize=30, direction='out')
+    ax.set(xticklabels=[])
+    plt.setp(ax.spines.values(), linewidth=2)
+
+    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
+                "/YearAnalysis/" + sv + 'Year_beforeVSafter_' + yr + '.pdf', type='pdf', dpi=fig.dpi,
+                bbox_inches='tight',
+                transparent=True)
+    # plt.show()

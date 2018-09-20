@@ -24,18 +24,16 @@ col_to_skip = ['FromDatabase', 'ComparedStatus', 'RecordingDay', 'RecordingMonth
                'RecordingTime']
 data_for_song = log_song_data_unique.drop(col_to_skip, axis=1).dropna(axis=0)
 fn = lambda x: x['CatalogNo'].split('.')[0]
-data_for_song['CatalogNo'] = data_for_song.apply(fn, axis=1)
-# data_for_song.to_csv('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation' + \
-#             '/testingCatalogNo.csv')
+data_for_song['CatalogNo'] = data_for_song.apply(fn, axis=1).astype(str)
 
 # load recorder data
 recorder_path = "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject/recorder spreadsheets from nicole/recorder " \
                 "data.csv"
 data_for_rec = pd.DataFrame.from_csv(recorder_path, header=0, index_col=None)
-data_for_rec['CatalogNo'] = data_for_song['CatalogNo'].astype(object)
+data_for_rec['CatalogNo'] = data_for_rec['CatalogNo'].astype(str)
 
 # combine tables using CatalogNo
-combined_table = data_for_song.merge(data_for_rec, on='CatalogNo')
+combined_table = data_for_song.merge(data_for_rec, how='inner', on='CatalogNo')
 
 #divide up by signal type
 analog = combined_table[combined_table.SignalType == 'Analog']
@@ -61,26 +59,26 @@ m.drawcountries(color='k', linewidth=1)
 m.drawstates(color='gray')
 m.drawmapboundary(fill_color='w', color='none')
 
-# # #plot points at sampling locations
-# m.scatter(analog['Longitude'], analog['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
-#           edgecolor='black', linewidth=1)
-#
 # #plot points at sampling locations
-# m.scatter(digital['Longitude'], digital['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
-#           edgecolor='black', linewidth=1)
-
-# #plot points at sampling locations
-m.scatter(reelToReel['Longitude'], reelToReel['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
+m.scatter(analog['Longitude'], analog['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
           edgecolor='black', linewidth=1)
 
 #plot points at sampling locations
-m.scatter(digitalRec['Longitude'], digitalRec['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
+m.scatter(digital['Longitude'], digital['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
           edgecolor='black', linewidth=1)
+
+# # #plot points at sampling locations
+# m.scatter(reelToReel['Longitude'], reelToReel['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
+#           edgecolor='black', linewidth=1)
+#
+# #plot points at sampling locations
+# m.scatter(digitalRec['Longitude'], digitalRec['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
+#           edgecolor='black', linewidth=1)
 
 plt.tight_layout()
 
 plt.savefig("C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported"
-            "/RecorderAnalysis/recorderType_geoSpreadOfData_reelToReelLightdigitalRecDark.pdf", type='pdf', dpi=fig.dpi,
+            "/RecorderAnalysis/signalType_geoSpreadOfData_AnalogLightDigitalDark.pdf", type='pdf', dpi=fig.dpi,
             bbox_inches='tight')
 
 # plt.show()
@@ -101,3 +99,35 @@ with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalDa
         rr = np.asarray(reelToReel[sv])
         dr = np.asarray(digitalRec[sv])
         filewriter.writerow([sv, ranksums(a, d)[0], ranksums(a, d)[1], ranksums(rr, dr)[0], ranksums(rr, dr)[1]])
+
+
+"""
+Box Plot for 'MeanSyllableStereotypy' for signal type
+"""
+sv = 'MeanSyllableStereotypy'
+
+fig = plt.figure(figsize=(7, 11))
+sns.set(style='white')
+ax = sns.boxplot(x='SignalType', y=sv, data=combined_table[['SignalType', sv]], color='None',
+                 fliersize=0, width=0.5, linewidth=2, order=['Analog', 'Digital'])
+ax = sns.stripplot(x='SignalType', y=sv, data=combined_table[['SignalType', sv]],
+                   order=['Analog', 'Digital'],
+                   palette=['gray', 'black'], size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None,
+                   linewidth=0)
+
+# Make the boxplot fully transparent
+for patch in ax.artists:
+    r, g, b, a = patch.get_facecolor()
+    patch.set_facecolor((r, g, b, 0))
+
+ax.set_ylabel('Mean Stereotypy of Repeated Syllables (%)', fontsize=30)
+ax.set_xlabel('')
+ax.tick_params(labelsize=30, direction='out')
+ax.set(xticklabels=[])
+plt.setp(ax.spines.values(), linewidth=2)
+
+plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
+            "/RecorderAnalysis/" + sv + 'RecorderSignalType_AnalogDigital' + '.pdf', type='pdf', dpi=fig.dpi,
+            bbox_inches='tight',
+            transparent=True)
+# plt.show()
