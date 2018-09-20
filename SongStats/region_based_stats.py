@@ -1,5 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 import numpy as np
 from matplotlib.backends.backend_pdf import PdfPages
 import seaborn as sns; sns.set()
@@ -87,7 +90,7 @@ for key, value in log_var.items():
                      linewidth=2)
     ax = sns.stripplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]],
                        palette=['#f17300', '#1f78b4', '#33a02c'],
-                       size=7, jitter=True, lw=1, alpha=0.6)
+                       size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None, linewidth=0)
 
     # Make the boxplot fully transparent
     for patch in ax.artists:
@@ -112,7 +115,7 @@ for key, value in log_var.items():
 
     plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
                 "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
-                bbox_inches='tight')
+                bbox_inches='tight', transparent=True)
     # plt.cla()
     # plt.clf()
     plt.close()
@@ -129,7 +132,7 @@ for key, value in log_convert_var.items():
                      linewidth=2)
     ax = sns.stripplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]],
                        palette=['#f17300', '#1f78b4', '#33a02c'],
-                       size=7, jitter=True, lw=1, alpha=0.6)
+                       size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None, linewidth=0)
 
     # Make the boxplot fully transparent
     for patch in ax.artists:
@@ -154,7 +157,7 @@ for key, value in log_convert_var.items():
 
     plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
                 "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
-                bbox_inches='tight')
+                bbox_inches='tight', transparent=True)
     # plt.cla()
     # plt.clf()
     plt.close()
@@ -171,7 +174,7 @@ for key, value in log_convert_inverse_var.items():
                      linewidth=2)
     ax = sns.stripplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]],
                        palette=['#f17300', '#1f78b4', '#33a02c'],
-                       size=7, jitter=True, lw=1, alpha=0.6)
+                       size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None, linewidth=0)
 
     # Make the boxplot fully transparent
     for patch in ax.artists:
@@ -196,7 +199,7 @@ for key, value in log_convert_inverse_var.items():
 
     plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
                 "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
-                bbox_inches='tight')
+                bbox_inches='tight', transparent=True)
     # plt.cla()
     # plt.clf()
     plt.close()
@@ -213,7 +216,7 @@ for key, value in no_log.items():
                      linewidth=2)
     ax = sns.stripplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]],
                        palette=['#f17300', '#1f78b4', '#33a02c'],
-                       size=7, jitter=True, lw=1, alpha=0.6)
+                       size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None, linewidth=0)
 
     # Make the boxplot fully transparent
     for patch in ax.artists:
@@ -238,7 +241,7 @@ for key, value in no_log.items():
 
     plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
                 "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
-                bbox_inches='tight')
+                bbox_inches='tight', transparent=True)
     # plt.cla()
     # plt.clf()
     plt.close()
@@ -255,7 +258,7 @@ for key, value in no_log_convert.items():
                      linewidth=2)
     ax = sns.stripplot(x='Region', y=data_for_wrs.columns[key], data=data_for_wrs[['Region', data_for_wrs.columns[key]]],
                        palette=['#f17300', '#1f78b4', '#33a02c'],
-                       size=7, jitter=True, lw=1, alpha=0.6)
+                       size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None, linewidth=0)
 
     # Make the boxplot fully transparent
     for patch in ax.artists:
@@ -280,7 +283,7 @@ for key, value in no_log_convert.items():
 
     plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/BoxPlots_Norm"
                 "/PaperVersion_noLogAxis_largerFont/" + data_for_wrs.columns[key] + '_noLogAxis_largerFont' + '.pdf', type='pdf', dpi=fig.dpi,
-                bbox_inches='tight')
+                bbox_inches='tight', transparent=True)
     # plt.cla()
     # plt.clf()
     plt.close()
@@ -365,7 +368,7 @@ plt.tight_layout()
 pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\GeoSpreadOfRecordings/" +
                'AllRecordingLocations_UniqueUse_logBins' + '.pdf')
 
-pdf.savefig(dpi=fig.dpi, orientation='landscape')
+pdf.savefig(dpi=fig.dpi, orientation='landscape', transparent=True)
 pdf.close()
 
 plt.show()
@@ -401,7 +404,7 @@ plt.tight_layout()
 pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\GeoSpreadOfRecordings/" +
                'EastWestSouthRecordingLocations_UniqueUse_logBins' + '.pdf')
 
-pdf.savefig(dpi=fig.dpi, orientation='landscape')
+pdf.savefig(dpi=fig.dpi, orientation='landscape', transparent=True)
 pdf.close()
 
 plt.show()
@@ -453,7 +456,7 @@ plt.tight_layout()
 pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\GeoSpreadOfRecordings/" +
                'EastWestSouthRecordingLocations_UniqueUse_downsampled_logBins' + '.pdf')
 
-pdf.savefig(dpi=fig.dpi, orientation='landscape')
+pdf.savefig(dpi=fig.dpi, orientation='landscape', transparent=True)
 pdf.close()
 
 # plt.show()

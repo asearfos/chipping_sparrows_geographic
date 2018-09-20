@@ -1,6 +1,9 @@
 from __future__ import print_function
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 from matplotlib.backends.backend_pdf import PdfPages
 import seaborn as sns; sns.set()
 from scipy import stats
@@ -82,9 +85,9 @@ g = sns.pairplot(data=data_for_corr,
              kind='reg')
 
 g.map(corrfunc)
-pdf.savefig()
+pdf.savefig(transparent=True)
 pdf.close()
-plt.show()
+# plt.show()
 
 
 """
@@ -129,6 +132,6 @@ g = sns.pairplot(data=data_for_corr_ew,
 
 g._legend.remove()
 g.map(corrfunc)
-pdf.savefig()
+pdf.savefig(transparent=True)
 pdf.close()
-plt.show()
+# plt.show()

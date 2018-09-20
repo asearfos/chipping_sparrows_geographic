@@ -1,6 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 from matplotlib.backends.backend_pdf import PdfPages
 import seaborn as sns; sns.set()
 from scipy.stats import ranksums
@@ -75,8 +78,8 @@ Box plots (change out the sv, the index for title, and the formatting for the tw
 duration and number of syllables)
 """
 # box plot for duration of song bout, take exponential (and convert from ms to s for bout duration)
-for sv in ['BoutDuration_ms']:  # for bout duration
-# for sv in ['NumSyllables']:  # for num of sylls
+# for sv in ['BoutDuration_ms']:  # for bout duration
+for sv in ['NumSyllables']:  # for num of sylls
     before_sunrise = combined_df_unique.loc[combined_df_unique['Sunrise'] == 'before sunrise', sv]
     after_sunrise = combined_df_unique.loc[combined_df_unique['Sunrise'] == 'after sunrise', sv]
     sunrise_after_noon = combined_df_unique.loc[combined_df_unique['Sunrise'] == 'after noon', sv]
@@ -91,21 +94,22 @@ for sv in ['BoutDuration_ms']:  # for bout duration
                      fliersize=0, width=0.5, linewidth=2, order=['before civil', 'after civil', 'after noon'])
     ax = sns.stripplot(x='CivilTwilight', y=sv, data=combined_df_unique[['CivilTwilight', sv]],
                        order=['before civil', 'after civil', 'after noon'],
-                       palette=['black', '#95B2B8', '#F1D302'], size=7, jitter=True, lw=1, alpha=0.6)
+                       palette=['black', '#95B2B8', '#F1D302'], size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None,
+                       linewidth=0)
 
     # Make the boxplot fully transparent
     for patch in ax.artists:
         r, g, b, a = patch.get_facecolor()
         patch.set_facecolor((r, g, b, 0))
 
-    ax.set_ylabel(song_variables[0], fontsize=30)  # for bout duration
-    # ax.set_ylabel(song_variables[1], fontsize=30)  # for num of sylls
+    # ax.set_ylabel(song_variables[0], fontsize=30)  # for bout duration
+    ax.set_ylabel(song_variables[1], fontsize=30)  # for num of sylls
     ax.set_xlabel('')
     ax.tick_params(labelsize=30, direction='out')
     ax.set(xticklabels=[])
     plt.setp(ax.spines.values(), linewidth=2)
-    ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x)/1000)))  # for bout duration
-    # ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x))))  # for num of sylls
+    # ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x)/1000)))  # for bout duration
+    ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x))))  # for num of sylls
 
     # plt.tight_layout()
     # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/TimeAnalysis"
@@ -114,7 +118,8 @@ for sv in ['BoutDuration_ms']:  # for bout duration
     # pdf.close()
 
     plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
-                "/TimeAnalysis/" + sv + '_Civil' + '.pdf', type='pdf', dpi=fig.dpi, bbox_inches='tight')
+                "/TimeAnalysis/" + sv + '_Civil' + '.pdf', type='pdf', dpi=fig.dpi, bbox_inches='tight',
+                transparent=True)
     # plt.show()
 
     fig = plt.figure(figsize=(7, 11))
@@ -123,21 +128,22 @@ for sv in ['BoutDuration_ms']:  # for bout duration
                      fliersize=0, width=0.5, linewidth=2, order=['before sunrise', 'after sunrise', 'after noon'])
     ax = sns.stripplot(x='Sunrise', y=sv, data=combined_df_unique[['Sunrise', sv]],
                        order=['before sunrise', 'after sunrise', 'after noon'],
-                       palette=['black', '#95B2B8', '#F1D302'], size=7, jitter=True, lw=1, alpha=0.6)
+                       palette=['black', '#95B2B8', '#F1D302'], size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None,
+                       linewidth=0)
 
     # Make the boxplot fully transparent
     for patch in ax.artists:
         r, g, b, a = patch.get_facecolor()
         patch.set_facecolor((r, g, b, 0))
 
-    ax.set_ylabel(song_variables[0], fontsize=30)  # for bout duration
-    # ax.set_ylabel(song_variables[1], fontsize=30)  # for num of sylls
+    # ax.set_ylabel(song_variables[0], fontsize=30)  # for bout duration
+    ax.set_ylabel(song_variables[1], fontsize=30)  # for num of sylls
     ax.set_xlabel('')
     ax.tick_params(labelsize=30, direction='out')
     ax.set(xticklabels=[])
     plt.setp(ax.spines.values(), linewidth=2)
-    ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x)/1000)))  # for bout duration
-    # ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x))))  # for num of sylls
+    # ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x)/1000)))  # for bout duration
+    ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x))))  # for num of sylls
 
     # plt.tight_layout()
     # pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/TimeAnalysis"
@@ -147,4 +153,5 @@ for sv in ['BoutDuration_ms']:  # for bout duration
     # plt.show()
 
     plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
-                "/TimeAnalysis/" + sv + '_Sunrise' + '.pdf', type='pdf', dpi=fig.dpi, bbox_inches='tight')
+                "/TimeAnalysis/" + sv + '_Sunrise' + '.pdf', type='pdf', dpi=fig.dpi, bbox_inches='tight',
+                transparent=True)
