@@ -80,14 +80,6 @@ duration and number of syllables)
 # box plot for duration of song bout, take exponential (and convert from ms to s for bout duration)
 # for sv in ['BoutDuration_ms']:  # for bout duration
 for sv in ['NumSyllables']:  # for num of sylls
-    before_sunrise = combined_df_unique.loc[combined_df_unique['Sunrise'] == 'before sunrise', sv]
-    after_sunrise = combined_df_unique.loc[combined_df_unique['Sunrise'] == 'after sunrise', sv]
-    sunrise_after_noon = combined_df_unique.loc[combined_df_unique['Sunrise'] == 'after noon', sv]
-
-    before_civil = combined_df_unique.loc[combined_df_unique['CivilTwilight'] == 'before civil', sv]
-    after_civil = combined_df_unique.loc[combined_df_unique['CivilTwilight'] == 'after civil', sv]
-    civil_after_noon = combined_df_unique.loc[combined_df_unique['CivilTwilight'] == 'after noon', sv]
-
     fig = plt.figure(figsize=(7, 11))
     sns.set(style='white')
     ax = sns.boxplot(x='CivilTwilight', y=sv, data=combined_df_unique[['CivilTwilight', sv]], color='None',
