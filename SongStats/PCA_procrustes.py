@@ -25,15 +25,18 @@ log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['
     drop=True)
 
 # drop any metadata that is not needed for this analysis
-col_to_skip = ['CatalogNo', 'FromDatabase', 'ComparedStatus', 'RecordingDay', 'RecordingMonth', 'RecordingYear',
-               'RecordingTime']
+col_to_skip = ['CatalogNo', 'FromDatabase', 'ComparedStatus', 'RecordingDay', 'RecordingMonth']
 data_for_PCA = log_song_data_unique.drop(col_to_skip, axis=1)
+data_for_PCA['RecordingTime'] = pd.to_datetime(data_for_PCA['RecordingTime'])
+data_for_PCA['RecordingTime'] = [t.hour * 3600 + t.minute * 60 + t.second for t in data_for_PCA['RecordingTime']]
 
 """
 PCA analysis
 """
-# temporarily do not need Region, Latitude and Longitude for PCA, will need later for plotting (color based by region)
-songVarTable_forPCA = StandardScaler().fit_transform(data_for_PCA.drop(['Region', 'Latitude', 'Longitude'], axis=1))
+# temporarily do not need Region, Latitude, Longitude, RecordingYear or RecordingTime for PCA, will need later for
+# correlations and plotting (color based by region)
+songVarTable_forPCA = StandardScaler().fit_transform(data_for_PCA.drop(['Region', 'Latitude', 'Longitude',
+                                                                        'RecordingYear', 'RecordingTime'], axis=1))
 
 # Visualize Explained Variance
 # note for the plot, the PC1 is really at the 0 tick mark as python counts from 0
@@ -53,7 +56,6 @@ PCs_nComp = pca.fit_transform(songVarTable_forPCA)
 principalDf = pd.DataFrame(data=PCs_nComp, columns=['PC1', 'PC2'])  #multiply the PC1 and PC2 by -1 so that they
 principalDf['PC1'] = -1*principalDf['PC1']
 
-# graph with east on the right and west on the left.
 finalDf = pd.concat([data_for_PCA[['Region', 'Latitude', 'Longitude']], principalDf], axis=1)
 print(pca.explained_variance_ratio_)
 
@@ -61,6 +63,8 @@ print(pca.explained_variance_ratio_)
 """
 PC1 and PC2 correlation to song variables
 """
+data_for_corr = data_for_PCA.drop(['Region'], axis=1)
+
 with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported'
           '/PCA_Procrustes/PCA_songVar_corr.csv', 'wb') as file:
     filewriter = csv.writer(file, delimiter=',')
@@ -70,9 +74,13 @@ with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalDa
                          'PC2 r',
                          'PC2 pval'])
 
-    for var in data_for_PCA.columns.values[3:]:
-        r1, pval1 = stats.pearsonr(x=data_for_PCA[var], y=finalDf['PC1'])
-        r2, pval2 = stats.pearsonr(x=data_for_PCA[var], y=finalDf['PC2'])
+    for var in data_for_corr.columns.values[:]:
+        # find any rows that do not have the var; remove such rows from both x and y.
+        x = data_for_corr[var]
+        nas = x.isnull()
+        y = finalDf[~nas]
+        r1, pval1 = stats.pearsonr(x=x[~nas], y=y['PC1'])
+        r2, pval2 = stats.pearsonr(x=x[~nas], y=y['PC2'])
         filewriter.writerow([var, r1, pval1, r2, pval2])
 
 """
