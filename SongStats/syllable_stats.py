@@ -110,71 +110,9 @@ Syllables over time (by decades)
 """
 my_dpi = 96
 sns.set(style='white')
-# sns.set_context({"figure.figsize": (5, 20)})
-
-# # group by decade and syllable cluster
-# clusters_over_time = combined_table.groupby([(combined_table.RecordingYear//10)*10, 'ClusterNoAdjusted']).size(
-#     ).reset_index(name='count')
-#
-# # control for number of recordings in each decade
-# num_rec_per_decade = clusters_over_time.groupby('RecordingYear')['count'].transform('sum')
-# clusters_over_time['count'] = clusters_over_time['count'].div(num_rec_per_decade)
-# # control for number of recordings in each syllable cluster
-# num_rec_per_cluster = clusters_over_time.groupby('ClusterNoAdjusted')['count'].transform('sum')
-# clusters_over_time['count'] = clusters_over_time['count'].div(num_rec_per_cluster)
-#
-#
-# clusters_over_time = clusters_over_time[clusters_over_time['count'] != 1]  # remove any sylls only in one decade
-# clusters_over_time = clusters_over_time.pivot(columns='RecordingYear', index='ClusterNoAdjusted').fillna(0)
-# ax = sns.heatmap(clusters_over_time, xticklabels=True, yticklabels=True, annot=True)
-# plt.tight_layout()
-# plt.savefig(
-#     "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SyllableAnalysis"
-#     "/SyllableHeatmap_byDecade_normDecadeThenCluster" + '.pdf', type='pdf', bbox_inches='tight',
-#     transparent=True)
-# plt.show()
-
-
-
-
-# sns.set_context({"figure.figsize": (10, 5)})
-# # group by decade and syllable cluster
-# clusters_over_time = combined_table.groupby([(combined_table.RecordingYear//10)*10, 'ClusterNoAdjusted']).size(
-#     ).reset_index(name='count')
-# num_rec_per_decade = clusters_over_time.groupby('RecordingYear')['count'].transform('sum')
-# clusters_over_time['count'] = clusters_over_time['count'].div(num_rec_per_decade)
-#
-# most_freq_clusters = combined_table.groupby('ClusterNoAdjusted').size().sort_values(ascending=False).head(
-#     5).reset_index().ClusterNoAdjusted.values.tolist()
-#
-# # print(clusters_over_time[clusters_over_time['ClusterNoAdjusted'].isin(most_freq_clusters)].sort_values(
-# #     ['ClusterNoAdjusted', 'RecordingYear']))
-#
-#
-# clusters_over_time_most_common = clusters_over_time[clusters_over_time['ClusterNoAdjusted'].isin(
-#     [35, 75, 7])].pivot(columns='ClusterNoAdjusted', index='RecordingYear')
-# # freq_clusters.columns = freq_clusters.columns.droplevel()
-# clusters_over_time_most_common.columns = clusters_over_time_most_common.columns.droplevel()
-# ax = clusters_over_time_most_common.plot(kind='line', grid=None, fontsize=10)
-# plt.tight_layout()
-# plt.show()
-#
-# # combined_table.RecordingYear = (combined_table.RecordingYear//10)*10
-# # print(combined_table[combined_table['ClusterNoAdjusted'].isin([75])][['CatalogNo', 'RecordingYear',
-# #                                                                       'ClusterNoAdjusted', 'Latitude', 'Longitude']])
-#
-# # plt.savefig(
-# #     "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SyllableAnalysis"
-# #     "/SyllablesOverDecades_normByRecNumInDecade_testing" + '.pdf', type='pdf',
-# #     bbox_inches='tight',
-# #     transparent=True)
-
-
-
-
+sns.set_context({"figure.figsize": (5, 6)})
 
 # before vs after 1984
-sns.set_context({"figure.figsize": (5, 6)})
 # group by decade and syllable cluster
 most_freq_clusters = combined_table.groupby('ClusterNoAdjusted').size().sort_values(ascending=False).head(
     10).reset_index().ClusterNoAdjusted.values.tolist()
