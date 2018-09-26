@@ -114,13 +114,14 @@ sns.set_context({"figure.figsize": (20, 7)})
 # freq_clusters = freq_clusters.sort_values('clusters_cat')
 # freq_clusters = freq_clusters.drop('clusters_cat', axis=1)
 # # freq_clusters = freq_clusters.sort_values(by=['east', 'west', 'south', 'mid'], ascending=False)
-# ax = freq_clusters.plot(kind='bar', stacked=True, width=0.8, grid=None, fontsize=10,
+# ax = freq_clusters.plot(kind='bar', stacked=False, width=1, grid=None, fontsize=10,
 #                         color=['#1f78b4', 'gray', '#f17300', '#33a02c'], edgecolor='black')
 # plt.tight_layout()
 # plt.savefig(
 #     "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SyllableAnalysis"
-#     "/SyllableFrequency_normByRecNumInRegion_sortedByNumInCluster" + '.pdf', type='pdf', bbox_inches='tight',
+#     "/SyllableFrequency_normByRecNumInRegion_sortedByNumInCluster_unstacked" + '.pdf', type='pdf', bbox_inches='tight',
 #     transparent=True)
+# quit()
 
 """
 Frequency of syllable categories
@@ -175,7 +176,7 @@ sns.set_context({"figure.figsize": (20, 7)})
 #     transparent=True)
 
 
-# # normalized by number of recordings in each region, sorted by number of recordings in a cluster
+# # normalized by number of recordings in each region, sorted by number of recordings in a category
 # temp = combined_table.groupby(['Region', 'Category']).size().reset_index().pivot(
 #     columns='Region', index='Category', values=0)
 # temp['numInCategory'] = temp.sum(axis=1)
@@ -203,6 +204,65 @@ sns.set_context({"figure.figsize": (20, 7)})
 #     "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SyllableAnalysis"
 #     "/SyllableCategory_normByRecNumInRegion_sortedByNumInCateogry" + '.pdf', type='pdf', bbox_inches='tight',
 #     transparent=True)
+"""
+Two plots for paper
+"""
+# raw counts (not normalized)
+
+# sort by type (type with most to type with least); within type sort by cluster
+temp = combined_table.groupby(['Category']).size().reset_index(name='numInCategory')
+temp = temp.sort_values(by='numInCategory')
+orderByNumInCategory = temp.Category.values.tolist()
+
+temp2 = combined_table.groupby(['Category', 'ClusterNoAdjusted']).size().reset_index(name='numInCluster')
+temp2['Category'] = temp2.Category.astype('category', ordered=True, categories=orderByNumInCategory)
+temp2 = temp2.sort_values(['Category', 'numInCluster'], ascending=False)
+orderByCatThenByNumInCluster = temp2.ClusterNoAdjusted.values.tolist()
+
+freq_clusters = combined_table.groupby(['Region', 'ClusterNoAdjusted']).size().reset_index(name='count').pivot(
+    columns='Region', index='ClusterNoAdjusted')
+freq_clusters['clusters_cat'] = pd.Categorical(
+    freq_clusters.index.values,
+    categories=orderByCatThenByNumInCluster,
+    ordered=True
+)
+freq_clusters = freq_clusters.sort_values('clusters_cat')
+freq_clusters = freq_clusters.drop('clusters_cat', axis=1)
+ax = freq_clusters.plot(kind='bar', stacked=True, width=1, grid=None, fontsize=10,
+                        color=['#1f78b4', 'gray', '#f17300', '#33a02c'], edgecolor='black')
+plt.tight_layout()
+# plt.savefig(
+#     "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SyllableAnalysis"
+#     "/SyllableFrequency_counts_sortedByCatThenByNumInCluster" + '.pdf', type='pdf',
+#     bbox_inches='tight',
+#     transparent=True)
+
+# normalized by # recordings in each region
+# sort by type (type with most to type with least); within type sort by cluster
+freq_clusters = combined_table.groupby(['Region', 'Category']).size().reset_index(name='count')
+num_rec_per_region = freq_clusters.groupby('Region')['count'].transform('sum')
+freq_clusters['count'] = freq_clusters['count'].div(num_rec_per_region)
+freq_clusters = freq_clusters.pivot(columns='Region', index='Category')
+freq_clusters.columns = freq_clusters.columns.droplevel()
+freq_clusters['category_cat'] = pd.Categorical(
+    freq_clusters.index.values,
+    categories=orderByNumInCategory[::-1],
+    ordered=True
+)
+freq_clusters = freq_clusters.sort_values('category_cat')
+freq_clusters = freq_clusters.drop('category_cat', axis=1)
+print(freq_clusters)
+freq_clusters = freq_clusters.reindex_axis(['east', 'west', 'south', 'mid'], axis=1)
+print(freq_clusters)
+ax = freq_clusters.plot(kind='bar', stacked=False, width=0.5, grid=None, fontsize=10,
+                        color=['#1f78b4', '#33a02c', '#f17300', 'gray'], edgecolor='black', rot=0)
+plt.tight_layout()
+plt.show()
+# plt.savefig(
+#     "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SyllableAnalysis"
+#     "/SyllableCategory_normByRecNumInRegion_sortedByCatThenByNumInCluster" + '.pdf', type='pdf', bbox_inches='tight',
+#     transparent=True)
+
 
 
 """
