@@ -125,45 +125,73 @@ Frequency of syllable clusters and syllable categories: Two plots for paper
 """
 Syllables over time (by decades)
 """
-my_dpi = 96
-sns.set(style='white')
-sns.set_context({"figure.figsize": (6, 7)})
+# my_dpi = 96
+# sns.set(style='white')
+# sns.set_context({"figure.figsize": (6, 7)})
+#
+# # before vs after 1984
+# # group by decade and syllable cluster
+# most_freq_clusters = combined_table.groupby('ClusterNoAdjusted').size().sort_values(ascending=False).head(
+#     10).reset_index().ClusterNoAdjusted.values.tolist()
+#
+# # drop rows that do not have a year
+# combined_table = combined_table.dropna(subset=['RecordingYear'])
+#
+# # classify as before or after 1984
+# combined_table['1984'] = np.where(combined_table['RecordingYear'] < 1984, 'before', 'after')
+#
+# # groupby before or after 1984 and syllable cluster; get total number of recordings before and after 1984
+# clusters_over_time = combined_table.groupby(['1984', 'ClusterNoAdjusted']).size(
+#     ).reset_index(name='count')
+# print(clusters_over_time[clusters_over_time['ClusterNoAdjusted'].isin(most_freq_clusters)].sort_values(
+#     ['ClusterNoAdjusted']))
+#
+# # normalize by the total number of recordings either before or after 1984.
+# num_rec_per_group = clusters_over_time.groupby('1984')['count'].transform('sum')
+# print(clusters_over_time.groupby('1984')['count'].sum())
+# clusters_over_time['count'] = clusters_over_time['count'].div(num_rec_per_group)
+#
+# clusters_over_time_most_common = clusters_over_time[clusters_over_time['ClusterNoAdjusted'].isin(
+#     most_freq_clusters)]
+#
+# sns.set(style='white', rc={"font.style": "normal", 'lines.markersize': 2})
+# ax = sns.pointplot(x='1984', y='count', hue='ClusterNoAdjusted', data=clusters_over_time_most_common,
+#                    order=['before', 'after'], palette=['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99',
+#                                                        '#e31a1c', '#fdbf6f', '#ff7f00', '#cab2d6', '#6a3d9a'])
+#
+# plt.tight_layout()
+# # plt.show()
+# plt.savefig(
+#     "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SyllableAnalysis"
+#     "/SyllablesBeforeAfter1984_normByRecNumInGroup" + '.pdf',
+#     type='pdf',
+#     bbox_inches='tight',
+#     transparent=True)
 
-# before vs after 1984
-# group by decade and syllable cluster
-most_freq_clusters = combined_table.groupby('ClusterNoAdjusted').size().sort_values(ascending=False).head(
-    10).reset_index().ClusterNoAdjusted.values.tolist()
+"""
+Make an output table for supplement that give the total number of recordings in each syllable cluster, the earliest 
+and latest observation of such syllable and number of such syllable recorded in the east, west, mid, south. 
+"""
 
-# drop rows that do not have a year
-combined_table = combined_table.dropna(subset=['RecordingYear'])
+# get total number of recordings for each syllable cluster
+cluster_num_rec = combined_table.groupby('ClusterNoAdjusted').size().reset_index(
+    name='NumberOfRecordings').sort_values('ClusterNoAdjusted').set_index('ClusterNoAdjusted')
+print(cluster_num_rec)
 
-# classify as before or after 1984
-combined_table['1984'] = np.where(combined_table['RecordingYear'] < 1984, 'before', 'after')
+earliest_latest_rec = combined_table.assign(EarliestYear=combined_table['RecordingYear'].abs(), LatestYear=combined_table[
+    'RecordingYear'].abs()).groupby('ClusterNoAdjusted').agg({'EarliestYear': 'min', 'LatestYear': 'max'})
+earliest_latest_rec = earliest_latest_rec.fillna(0).astype(int)
+print(earliest_latest_rec)
 
-# groupby before or after 1984 and syllable cluster; get total number of recordings before and after 1984
-clusters_over_time = combined_table.groupby(['1984', 'ClusterNoAdjusted']).size(
-    ).reset_index(name='count')
-print(clusters_over_time[clusters_over_time['ClusterNoAdjusted'].isin(most_freq_clusters)].sort_values(
-    ['ClusterNoAdjusted']))
+cluster_regional_spread = combined_table.groupby(['Region', 'ClusterNoAdjusted']).size()\
+    .reset_index(name='num_in_region').pivot(columns='Region', index='ClusterNoAdjusted')
+cluster_regional_spread.columns = cluster_regional_spread.columns.droplevel()
+cluster_regional_spread = cluster_regional_spread.fillna(0).astype(int)
+print(cluster_regional_spread)
 
-# normalize by the total number of recordings either before or after 1984.
-num_rec_per_group = clusters_over_time.groupby('1984')['count'].transform('sum')
-print(clusters_over_time.groupby('1984')['count'].sum())
-clusters_over_time['count'] = clusters_over_time['count'].div(num_rec_per_group)
-
-clusters_over_time_most_common = clusters_over_time[clusters_over_time['ClusterNoAdjusted'].isin(
-    most_freq_clusters)]
-
-sns.set(style='white', rc={"font.style": "normal", 'lines.markersize': 2})
-ax = sns.pointplot(x='1984', y='count', hue='ClusterNoAdjusted', data=clusters_over_time_most_common,
-                   order=['before', 'after'], palette=['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99',
-                                                       '#e31a1c', '#fdbf6f', '#ff7f00', '#cab2d6', '#6a3d9a'])
-
-plt.tight_layout()
-# plt.show()
-plt.savefig(
-    "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SyllableAnalysis"
-    "/SyllablesBeforeAfter1984_normByRecNumInGroup" + '.pdf',
-    type='pdf',
-    bbox_inches='tight',
-    transparent=True)
+summary_table = pd.concat([cluster_num_rec, earliest_latest_rec, cluster_regional_spread], axis=1)
+summary_table = summary_table.reindex_axis(['NumberOfRecordings', 'EarliestYear', 'LatestYear', 'east', 'west',
+                                           'south', 'mid'], axis=1)
+print(summary_table)
+summary_table.to_csv('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported'
+                     '/SyllableAnalysis/SyllableClusterSummaryTable.csv')
