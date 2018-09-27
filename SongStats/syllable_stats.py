@@ -176,22 +176,18 @@ and latest observation of such syllable and number of such syllable recorded in 
 # get total number of recordings for each syllable cluster
 cluster_num_rec = combined_table.groupby('ClusterNoAdjusted').size().reset_index(
     name='NumberOfRecordings').sort_values('ClusterNoAdjusted').set_index('ClusterNoAdjusted')
-print(cluster_num_rec)
 
 earliest_latest_rec = combined_table.assign(EarliestYear=combined_table['RecordingYear'].abs(), LatestYear=combined_table[
     'RecordingYear'].abs()).groupby('ClusterNoAdjusted').agg({'EarliestYear': 'min', 'LatestYear': 'max'})
 earliest_latest_rec = earliest_latest_rec.fillna(0).astype(int)
-print(earliest_latest_rec)
 
 cluster_regional_spread = combined_table.groupby(['Region', 'ClusterNoAdjusted']).size()\
     .reset_index(name='num_in_region').pivot(columns='Region', index='ClusterNoAdjusted')
 cluster_regional_spread.columns = cluster_regional_spread.columns.droplevel()
 cluster_regional_spread = cluster_regional_spread.fillna(0).astype(int)
-print(cluster_regional_spread)
 
 summary_table = pd.concat([cluster_num_rec, earliest_latest_rec, cluster_regional_spread], axis=1)
 summary_table = summary_table.reindex_axis(['NumberOfRecordings', 'EarliestYear', 'LatestYear', 'east', 'west',
                                            'south', 'mid'], axis=1)
-print(summary_table)
 summary_table.to_csv('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported'
                      '/SyllableAnalysis/SyllableClusterSummaryTable.csv')
