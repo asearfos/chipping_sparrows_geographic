@@ -9,7 +9,6 @@ this re-analysis an additional file was tossed so that will need to be removed a
 """
 
 # Load in FinalDataCompilation_AnalysisOutput
-# import juncos datatable
 FinalData_AnalysisOutput_file = "C:/Users/abiga\Box " \
                                 "Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation" \
                                 "\FinalDataCompilation_AnalysisOutput_20180311_T202015.csv"
