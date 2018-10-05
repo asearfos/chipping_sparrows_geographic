@@ -19,12 +19,15 @@ log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['
     drop=True)
 
 # drop any metadata that is not needed for this analysis and any missing data
-col_to_skip = ['CatalogNo', 'ComparedStatus', 'RecordingDay', 'RecordingMonth', 'RecordingYear', 'RecordingTime']
+col_to_skip = ['CatalogNo', 'ComparedStatus', 'RecordingDay']
 data_for_source = log_song_data_unique.drop(col_to_skip, axis=1).dropna(axis=0)
+data_for_source['RecordingTime'] = pd.to_datetime(data_for_source['RecordingTime'])
+data_for_source['RecordingTime'] = [t.hour * 3600 + t.minute * 60 + t.second for t in data_for_source['RecordingTime']]
 
 #divide up by database
 fromXC = data_for_source[data_for_source.FromDatabase == 'Xeno-Canto']
 fromML = data_for_source.loc[data_for_source['FromDatabase'].isin(['Macaulay Library', 'eBird'])].copy().reset_index()
+fromBorrorWanChun = data_for_source[data_for_source.FromDatabase == 'old']
 
 """
 Location of data, colored by database
@@ -63,9 +66,14 @@ Wilcoxon Ranksums
 with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported'
           '/DatabaseAnalysis/database_WilcoxonRanksums.csv', 'wb') as file:
     filewriter = csv.writer(file, delimiter=',')
-    filewriter.writerow(['Song Variable', 'XC vs MLeBird w', 'XC vs MLeBird p-value'])
+    filewriter.writerow(['Fixed Variable', 'XC vs MLeBird w', 'XC vs MLeBird p-value',
+                         'XC vs Old w', 'XC vs Old p-value',
+                         'Old vs MLeBird w', 'Old vs MLeBird p-value'])
 
-    for sv in (['Longitude'] + data_for_source.columns[4:].tolist()):
-        b = np.asarray(fromXC[sv])
-        a = np.asarray(fromML[sv])
-        filewriter.writerow([sv, ranksums(b, a)[0], ranksums(b, a)[1]])
+    for sv in (['Latitude', 'Longitude', 'RecordingYear', 'RecordingMonth', 'RecordingTime']):
+        xc = np.asarray(fromXC[sv])
+        ml = np.asarray(fromML[sv])
+        old = np.asarray(fromBorrorWanChun[sv])
+        filewriter.writerow([sv, ranksums(xc, ml)[0], ranksums(xc, ml)[1],
+                             ranksums(xc, old)[0], ranksums(xc, old)[1],
+                             ranksums(old, ml)[0], ranksums(old, ml)[1]])
