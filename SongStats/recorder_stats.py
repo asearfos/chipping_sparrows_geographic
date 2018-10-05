@@ -20,28 +20,29 @@ log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['
     drop=True)
 
 # drop any metadata that is not needed for this analysis and any missing data
-col_to_skip = ['FromDatabase', 'ComparedStatus', 'RecordingDay', 'RecordingMonth', 'RecordingYear',
-               'RecordingTime']
+col_to_skip = ['FromDatabase', 'ComparedStatus', 'RecordingDay']
 data_for_song = log_song_data_unique.drop(col_to_skip, axis=1).dropna(axis=0)
 fn = lambda x: x['CatalogNo'].split('.')[0]
 data_for_song['CatalogNo'] = data_for_song.apply(fn, axis=1).astype(str)
+data_for_song['RecordingTime'] = pd.to_datetime(data_for_song['RecordingTime'])
+data_for_song['RecordingTime'] = [t.hour * 3600 + t.minute * 60 + t.second for t in data_for_song['RecordingTime']]
 
 # load recorder data
 recorder_path = "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject/recorder spreadsheets from nicole/recorder " \
-                "data.csv"
+                "data plus eBird.csv"
 data_for_rec = pd.DataFrame.from_csv(recorder_path, header=0, index_col=None)
-data_for_rec['CatalogNo'] = data_for_rec['CatalogNo'].astype(str)
+data_for_rec['catalogNumber'] = data_for_rec['catalogNumber'].astype(str)
 
 # combine tables using CatalogNo
-combined_table = data_for_song.merge(data_for_rec, how='inner', on='CatalogNo')
+combined_table = data_for_song.merge(data_for_rec, how='inner', left_on='CatalogNo', right_on='catalogNumber')
 
 #divide up by signal type
-analog = combined_table[combined_table.SignalType == 'Analog']
-digital = combined_table[combined_table.SignalType == 'Digital']
+analog = combined_table[combined_table.recorder_class == 'Analog']
+digital = combined_table[combined_table.recorder_class == 'Digital']
 
 #divide up by recorder type
-reelToReel = combined_table[combined_table.RecorderType == 'Reel-to-reel']
-digitalRec = combined_table[combined_table.RecorderType == 'Digital recorder']
+reelToReel = combined_table[combined_table.recorder_type == 'Reel-to-reel']
+digitalRec = combined_table[combined_table.recorder_type == 'Digital recorder']
 
 
 """
@@ -89,11 +90,11 @@ Wilcoxon Ranksums
 with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported'
           '/RecorderAnalysis/recorder_WilcoxonRanksums.csv', 'wb') as file:
     filewriter = csv.writer(file, delimiter=',')
-    filewriter.writerow(['Song Variable', 'Analog vs Digital w', 'Analog vs Digital p-value', 'ReelToReel vs '
+    filewriter.writerow(['Fixed Variable', 'Analog vs Digital w', 'Analog vs Digital p-value', 'ReelToReel vs '
                                                                                               'DigitalRec w',
                          'ReelToReel vs DigitalRec p-value'])
 
-    for sv in (['Longitude'] + combined_table.columns[4:-5].tolist()):
+    for sv in (['Latitude', 'Longitude', 'RecordingYear', 'RecordingMonth', 'RecordingTime']):
         a = np.asarray(analog[sv])
         d = np.asarray(digital[sv])
         rr = np.asarray(reelToReel[sv])
@@ -108,9 +109,9 @@ sv = 'MeanSyllableStereotypy'
 
 fig = plt.figure(figsize=(7, 11))
 sns.set(style='white')
-ax = sns.boxplot(x='SignalType', y=sv, data=combined_table[['SignalType', sv]], color='None',
+ax = sns.boxplot(x='recorder_class', y=sv, data=combined_table[['recorder_class', sv]], color='None',
                  fliersize=0, width=0.5, linewidth=2, order=['Analog', 'Digital'])
-ax = sns.stripplot(x='SignalType', y=sv, data=combined_table[['SignalType', sv]],
+ax = sns.stripplot(x='recorder_class', y=sv, data=combined_table[['recorder_class', sv]],
                    order=['Analog', 'Digital'],
                    palette=['gray', 'black'], size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None,
                    linewidth=0)
