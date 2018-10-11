@@ -86,8 +86,7 @@ for sv in ['NumSyllables']:  # for num of sylls
                      fliersize=0, width=0.5, linewidth=2, order=['before civil', 'after civil', 'after noon'])
     ax = sns.stripplot(x='CivilTwilight', y=sv, data=combined_df_unique[['CivilTwilight', sv]],
                        order=['before civil', 'after civil', 'after noon'],
-                       palette=['black', '#95B2B8', '#F1D302'], size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None,
-                       linewidth=0)
+                       palette=['black', '#95B2B8', '#F1D302'], size=7, jitter=True, lw=1, alpha=0.6)
 
     # Make the boxplot fully transparent
     for patch in ax.artists:
@@ -120,8 +119,7 @@ for sv in ['NumSyllables']:  # for num of sylls
                      fliersize=0, width=0.5, linewidth=2, order=['before sunrise', 'after sunrise', 'after noon'])
     ax = sns.stripplot(x='Sunrise', y=sv, data=combined_df_unique[['Sunrise', sv]],
                        order=['before sunrise', 'after sunrise', 'after noon'],
-                       palette=['black', '#95B2B8', '#F1D302'], size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None,
-                       linewidth=0)
+                       palette=['black', '#95B2B8', '#F1D302'], size=7, jitter=True, lw=1, alpha=0.6)
 
     # Make the boxplot fully transparent
     for patch in ax.artists:
