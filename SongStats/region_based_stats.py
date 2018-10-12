@@ -356,7 +356,7 @@ ticks_number = []
 t_old = []
 for t in cb.ax.get_yticklabels():
     t_old.append(float(t.get_text()))
-    new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
+    new_tick = float(t.get_text().replace(t.get_text(), str(int(round(10**float(t.get_text()))))))
     ticks_number.append(new_tick)
 cb.set_ticks(t_old)
 cb.set_ticklabels(["%.2f" % e for e in ticks_number])
@@ -366,7 +366,7 @@ cb.set_label('Number', size=25)
 plt.tight_layout()
 
 pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\GeoSpreadOfRecordings/" +
-               'AllRecordingLocations_UniqueUse_logBins' + '.pdf')
+               'AllRecordingLocations_UniqueUse_logBins_rounded' + '.pdf')
 
 pdf.savefig(dpi=fig.dpi, orientation='landscape', transparent=True)
 pdf.close()
@@ -392,7 +392,7 @@ ticks_number = []
 t_old = []
 for t in cb.ax.get_yticklabels():
     t_old.append(float(t.get_text()))
-    new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
+    new_tick = float(t.get_text().replace(t.get_text(), str(int(round(10**float(t.get_text()))))))
     ticks_number.append(new_tick)
 cb.set_ticks(t_old)
 cb.set_ticklabels(["%.2f" % e for e in ticks_number])
@@ -402,7 +402,7 @@ cb.set_label('Number', size=25)
 plt.tight_layout()
 
 pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\GeoSpreadOfRecordings/" +
-               'EastWestSouthRecordingLocations_UniqueUse_logBins' + '.pdf')
+               'EastWestSouthRecordingLocations_UniqueUse_logBins_rounded' + '.pdf')
 
 pdf.savefig(dpi=fig.dpi, orientation='landscape', transparent=True)
 pdf.close()
@@ -444,7 +444,7 @@ ticks_number = []
 t_old = []
 for t in cb.ax.get_yticklabels():
     t_old.append(float(t.get_text()))
-    new_tick = float(t.get_text().replace(t.get_text(), str(10**float(t.get_text()))))
+    new_tick = float(t.get_text().replace(t.get_text(), str(int(round(10**float(t.get_text()))))))
     ticks_number.append(new_tick)
 cb.set_ticks(t_old)
 cb.set_ticklabels(["%.2f" % e for e in ticks_number])
@@ -454,7 +454,7 @@ cb.set_label('Number', size=25)
 plt.tight_layout()
 
 pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\GeoSpreadOfRecordings/" +
-               'EastWestSouthRecordingLocations_UniqueUse_downsampled_logBins' + '.pdf')
+               'EastWestSouthRecordingLocations_UniqueUse_downsampled_logBins_rounded' + '.pdf')
 
 pdf.savefig(dpi=fig.dpi, orientation='landscape', transparent=True)
 pdf.close()
