@@ -27,6 +27,8 @@ data_subset = log_song_data.drop(col_to_skip, axis=1)
 data_path = "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\TimeAnalysis" \
             "\FinalData_LogTransformed_relativeToSunriseTwilightsNoon.csv"
 time_data = pd.DataFrame.from_csv(data_path, header=0, index_col=None)
+# must remove duplicates -- have more than one bird from same recording -- duplicate catalog number and time data
+time_data = time_data.drop_duplicates()
 
 # combine tables using catalog no
 combined_df = pd.merge(data_subset, time_data, on='CatalogNo')
@@ -34,7 +36,7 @@ combined_df = pd.merge(data_subset, time_data, on='CatalogNo')
 # only keep unique and use and ones with time data
 combined_df_unique = combined_df.loc[combined_df['ComparedStatus'].isin(['unique', 'use'])].copy().reset_index(
     drop=True)
-combined_df_unique = combined_df_unique.drop(combined_df_unique[combined_df_unique.CivilTwilight ==
+combined_df_unique = combined_df_unique.drop(combined_df_unique[combined_df_unique.Sunrise ==
                                                                 '--'].index).copy().reset_index(drop=True)
 
 """
