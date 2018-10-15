@@ -125,6 +125,7 @@ Frequency of syllable clusters and syllable categories: Two plots for paper
 """
 Syllables over time (by decades)
 """
+# # did not end up using in the paper
 # my_dpi = 96
 # sns.set(style='white')
 # sns.set_context({"figure.figsize": (6, 7)})
@@ -189,26 +190,35 @@ cluster_regional_spread = cluster_regional_spread.fillna(0).astype(int)
 summary_table = pd.concat([cluster_num_rec, earliest_latest_rec, cluster_regional_spread], axis=1)
 summary_table = summary_table.reindex_axis(['NumberOfRecordings', 'EarliestYear', 'LatestYear', 'east', 'west',
                                            'south', 'mid'], axis=1)
-summary_table.to_csv('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported'
-                     '/SyllableAnalysis/SyllableClusterSummaryTable.csv')
+# summary_table.to_csv('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported'
+#                      '/SyllableAnalysis/SyllableClusterSummaryTable.csv')
 
 
-# use this information to create a histogram of the lifespan of the syllable clusters
+# use this information to create a histogram of the lifespan of the syllable clusters (with hues for quartiles of
+# most to least prevalent syllables
 my_dpi = 96
 sns.set(style='white')
-sns.set_context({"figure.figsize": (6, 7)})
+sns.set_context({"figure.figsize": (20, 7)})
 
 summary_table_yr = summary_table[summary_table['EarliestYear'] != 0]
 summary_table_yr = summary_table_yr.assign(Lifespan=(summary_table_yr['LatestYear'] - summary_table_yr[
     'EarliestYear'] + 1))
 
+print(pd.qcut(summary_table_yr['NumberOfRecordings'], q=5, duplicates='drop'))
+summary_table_yr['quantile'] = pd.qcut(summary_table_yr['NumberOfRecordings'], 5, duplicates='drop', labels=False)
+
+lifespan_quantile = summary_table_yr.groupby(['quantile', 'Lifespan']).size().reset_index(name='count').pivot(
+    columns='quantile', index='Lifespan')
+
+new_index = list(range(min(lifespan_quantile.index), max(lifespan_quantile.index)+1))
+lifespan_quantile = lifespan_quantile.reindex(new_index)
+
 # plot and save figure
-num_bins = summary_table_yr['Lifespan'].max()
-ax = summary_table_yr['Lifespan'].plot(kind='hist', stacked=False, bins=num_bins, grid=None, fontsize=10,
-                                       edgecolor='black', rot=0, color='gray')
+ax = lifespan_quantile.plot(kind='bar', stacked=True, grid=None, width=1, fontsize=10, edgecolor='black', rot=0,
+                            color=['#cbc9e2', '#9e9ac8', '#756bb1', '#54278f'])# sns.color_palette("PRGn", 10))
 
 plt.tight_layout()
 plt.savefig(
     "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SyllableAnalysis"
-    "/HistogramOfClusterLifespans" + '.pdf', type='pdf', bbox_inches='tight',
+    "/HistogramOfClusterLifespans_stackedQuantiles" + '.pdf', type='pdf', bbox_inches='tight',
     transparent=True)
