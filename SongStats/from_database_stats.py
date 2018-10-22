@@ -63,6 +63,9 @@ plt.show()
 """"
 Wilcoxon Ranksums
 """
+
+metadata = ['Latitude', 'Longitude', 'RecordingYear', 'RecordingMonth', 'RecordingTime']
+
 with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported'
           '/DatabaseAnalysis/database_WilcoxonRanksums.csv', 'wb') as file:
     filewriter = csv.writer(file, delimiter=',')
@@ -70,10 +73,43 @@ with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalDa
                          'XC vs Old w', 'XC vs Old p-value',
                          'Old vs MLeBird w', 'Old vs MLeBird p-value'])
 
-    for sv in (['Latitude', 'Longitude', 'RecordingYear', 'RecordingMonth', 'RecordingTime']):
+    for sv in metadata:
         xc = np.asarray(fromXC[sv])
         ml = np.asarray(fromML[sv])
         old = np.asarray(fromBorrorWanChun[sv])
         filewriter.writerow([sv, ranksums(xc, ml)[0], ranksums(xc, ml)[1],
                              ranksums(xc, old)[0], ranksums(xc, old)[1],
                              ranksums(old, ml)[0], ranksums(old, ml)[1]])
+
+
+"""
+Box Plot for database
+"""
+data_for_source.FromDatabase.replace(['eBird'], ['Macaulay Library'], inplace=True)
+
+for sv in metadata:
+    fig = plt.figure(figsize=(7, 11))
+    sns.set(style='white')
+    ax = sns.boxplot(x='FromDatabase', y=sv, data=data_for_source[['FromDatabase', sv]], color='None',
+                     fliersize=0, width=0.5, linewidth=2, order=['old', 'Xeno-Canto', 'Macaulay Library'])
+    ax = sns.stripplot(x='FromDatabase', y=sv, data=data_for_source[['FromDatabase', sv]],
+                       order=['old', 'Xeno-Canto', 'Macaulay Library'], size=7, jitter=True, lw=1, alpha=0.6,
+                       edgecolor=None, linewidth=0)
+
+    # Make the boxplot fully transparent
+    for patch in ax.artists:
+        r, g, b, a = patch.get_facecolor()
+        patch.set_facecolor((r, g, b, 0))
+
+    ax.set_ylabel(sv, fontsize=30)
+    ax.set_xlabel('')
+    ax.tick_params(labelsize=30, direction='out')
+    ax.set(xticklabels=[])
+    plt.setp(ax.spines.values(), linewidth=2)
+
+    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
+                "/DatabaseAnalysis/" + sv + 'Database_OldXCML' + '.pdf', type='pdf', dpi=fig.dpi,
+                bbox_inches='tight',
+                transparent=True)
+    # plt.show()
+
