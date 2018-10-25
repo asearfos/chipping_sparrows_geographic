@@ -1,10 +1,15 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 import numpy as np
 import seaborn as sns; sns.set()
 import csv
 from mpl_toolkits.basemap import Basemap
 from scipy.stats import ranksums
+from matplotlib.ticker import FuncFormatter
+
 
 """
 Load data and organize/subset for testing changes over years
@@ -100,7 +105,7 @@ with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalDa
                             ranksums(b_w, a_w)[0], ranksums(b_w, a_w)[1]])
 
 """
-Wilcoxon ranksums --> split into before and after 1984 and see if there is a difference in east and west within one 
+Wilcoxon ranksums --> split into before and after 1984 and see if there is a difference in east and west within one
 of those categories
 """
 with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/YearAnalysis'
@@ -120,7 +125,7 @@ with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalDa
                              ranksums(a_e, a_w)[0], ranksums(a_e, a_w)[1]])
 
 """
-Wilcoxon ranksums --> split into before and after 1959 and see if there is a difference in east and west within one 
+Wilcoxon ranksums --> split into before and after 1959 and see if there is a difference in east and west within one
 of those categories
 """
 with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/YearAnalysis'
@@ -140,38 +145,175 @@ with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalDa
                              ranksums(a_e, a_w)[0], ranksums(a_e, a_w)[1]])
 
 
+# """
+# Box Plot for 'MeanSyllableStereotypy' for signal type (both years)
+# """
+# # not use in the paper
+# data_for_year['1984'] = np.where(data_for_year['RecordingYear'] < 1984, 'before', 'after')
+# data_for_year['1959'] = np.where(data_for_year['RecordingYear'] < 1959, 'before', 'after')
+#
+# sv = 'MeanSyllableStereotypy'
+#
+# for yr in ['1984', '1959']:
+#     fig = plt.figure(figsize=(7, 11))
+#     sns.set(style='white')
+#     ax = sns.boxplot(x=yr, y=sv, data=data_for_year[[yr, sv]], color='None',
+#                      fliersize=0, width=0.5, linewidth=2, order=['before', 'after'])
+#     ax = sns.stripplot(x=yr, y=sv, data=data_for_year[[yr, sv]],
+#                        order=['before', 'after'],
+#                        palette=['gray', 'black'], size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None,
+#                        linewidth=0)
+#
+#     # Make the boxplot fully transparent
+#     for patch in ax.artists:
+#         r, g, b, a = patch.get_facecolor()
+#         patch.set_facecolor((r, g, b, 0))
+#
+#     ax.set_ylabel('Mean Stereotypy of Repeated Syllables (%)', fontsize=30)
+#     ax.set_xlabel('')
+#     ax.tick_params(labelsize=30, direction='out')
+#     ax.set(xticklabels=[])
+#     plt.setp(ax.spines.values(), linewidth=2)
+#
+#     plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
+#                 "/YearAnalysis/" + sv + 'Year_beforeVSafter_' + yr + '.pdf', type='pdf', dpi=fig.dpi,
+#                 bbox_inches='tight',
+#                 transparent=True)
+#     # plt.show()
+
+
 """
 Box Plot for 'MeanSyllableStereotypy' for signal type
 """
 
 data_for_year['1984'] = np.where(data_for_year['RecordingYear'] < 1984, 'before', 'after')
-data_for_year['1959'] = np.where(data_for_year['RecordingYear'] < 1959, 'before', 'after')
 
 sv = 'MeanSyllableStereotypy'
+yr = '1984'
 
-for yr in ['1984', '1959']:
-    fig = plt.figure(figsize=(7, 11))
-    sns.set(style='white')
-    ax = sns.boxplot(x=yr, y=sv, data=data_for_year[[yr, sv]], color='None',
-                     fliersize=0, width=0.5, linewidth=2, order=['before', 'after'])
-    ax = sns.stripplot(x=yr, y=sv, data=data_for_year[[yr, sv]],
-                       order=['before', 'after'],
-                       palette=['gray', 'black'], size=7, jitter=True, lw=1, alpha=0.6, edgecolor=None,
-                       linewidth=0)
+fig = plt.figure(figsize=(7, 11))
+sns.set(style='white')
+ax = sns.boxplot(x=yr, y=sv, data=data_for_year[[yr, sv]], color='None',
+                 fliersize=0, width=0.5, linewidth=2, order=['before', 'after'])
+ax = sns.stripplot(x=yr, y=sv, data=data_for_year[[yr, sv]],
+                   order=['before', 'after'],
+                   palette=['black', 'grey'], size=7, jitter=True, lw=1, alpha=0.6)
 
-    # Make the boxplot fully transparent
-    for patch in ax.artists:
-        r, g, b, a = patch.get_facecolor()
-        patch.set_facecolor((r, g, b, 0))
+# Make the boxplot fully transparent
+for patch in ax.artists:
+    r, g, b, a = patch.get_facecolor()
+    patch.set_facecolor((r, g, b, 0))
 
-    ax.set_ylabel('Mean Stereotypy of Repeated Syllables (%)', fontsize=30)
-    ax.set_xlabel('')
-    ax.tick_params(labelsize=30, direction='out')
-    ax.set(xticklabels=[])
-    plt.setp(ax.spines.values(), linewidth=2)
+ax.set_ylabel('Mean Stereotypy of Repeated Syllables (%)', fontsize=30)
+ax.set_xlabel('')
+ax.tick_params(labelsize=30, direction='out')
+# ax.set(xticklabels=[])
+plt.setp(ax.spines.values(), linewidth=2)
 
-    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
-                "/YearAnalysis/" + sv + 'Year_beforeVSafter_' + yr + '.pdf', type='pdf', dpi=fig.dpi,
-                bbox_inches='tight',
-                transparent=True)
-    # plt.show()
+plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
+            "/YearAnalysis/" + sv + 'Year_beforeVSafter_' + yr + '.pdf', type='pdf', dpi=fig.dpi,
+            bbox_inches='tight',
+            transparent=True)
+# plt.show()
+
+
+"""
+Box Plot for 'BoutDuration_ms' for signal type
+"""
+
+sv = 'BoutDuration_ms'
+yr = '1984'
+
+fig = plt.figure(figsize=(7, 11))
+sns.set(style='white')
+ax = sns.boxplot(x=yr, y=sv, data=data_for_year[[yr, sv]], color='None',
+                 fliersize=0, width=0.5, linewidth=2, order=['before', 'after'])
+ax = sns.stripplot(x=yr, y=sv, data=data_for_year[[yr, sv]],
+                   order=['before', 'after'],
+                   palette=['black', 'grey'], size=7, jitter=True, lw=1, alpha=0.6)
+
+# Make the boxplot fully transparent
+for patch in ax.artists:
+    r, g, b, a = patch.get_facecolor()
+    patch.set_facecolor((r, g, b, 0))
+
+ax.set_ylabel('Duration of Song Bout (s)', fontsize=30)
+ax.set_xlabel('')
+ax.tick_params(labelsize=30, direction='out')
+# ax.set(xticklabels=[])
+plt.setp(ax.spines.values(), linewidth=2)
+ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x) / 1000)))
+
+plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
+            "/YearAnalysis/" + sv + 'Year_beforeVSafter_' + yr + '.pdf', type='pdf', dpi=fig.dpi,
+            bbox_inches='tight',
+            transparent=True)
+# plt.show()
+
+
+"""
+Box Plot for 'AvgNoteDuration_ms' for signal type
+"""
+
+sv = 'AvgNoteDuration_ms'
+yr = '1984'
+
+fig = plt.figure(figsize=(7, 11))
+sns.set(style='white')
+ax = sns.boxplot(x=yr, y=sv, data=data_for_year[[yr, sv]], color='None',
+                 fliersize=0, width=0.5, linewidth=2, order=['before', 'after'])
+ax = sns.stripplot(x=yr, y=sv, data=data_for_year[[yr, sv]],
+                   order=['before', 'after'],
+                   palette=['black', 'grey'], size=7, jitter=True, lw=1, alpha=0.6)
+
+# Make the boxplot fully transparent
+for patch in ax.artists:
+    r, g, b, a = patch.get_facecolor()
+    patch.set_facecolor((r, g, b, 0))
+
+ax.set_ylabel('Mean Note Duration (ms)', fontsize=30)
+ax.set_xlabel('')
+ax.tick_params(labelsize=30, direction='out')
+# ax.set(xticklabels=[])
+plt.setp(ax.spines.values(), linewidth=2)
+ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x))))
+
+plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
+            "/YearAnalysis/" + sv + 'Year_beforeVSafter_' + yr + '.pdf', type='pdf', dpi=fig.dpi,
+            bbox_inches='tight',
+            transparent=True)
+# plt.show()
+
+
+"""
+Box Plot for 'NumSyllables' for signal type
+"""
+
+sv = 'NumSyllables'
+yr = '1984'
+
+fig = plt.figure(figsize=(7, 11))
+sns.set(style='white')
+ax = sns.boxplot(x=yr, y=sv, data=data_for_year[[yr, sv]], color='None',
+                 fliersize=0, width=0.5, linewidth=2, order=['before', 'after'])
+ax = sns.stripplot(x=yr, y=sv, data=data_for_year[[yr, sv]],
+                   order=['before', 'after'],
+                   palette=['black', 'grey'], size=7, jitter=True, lw=1, alpha=0.6)
+
+# Make the boxplot fully transparent
+for patch in ax.artists:
+    r, g, b, a = patch.get_facecolor()
+    patch.set_facecolor((r, g, b, 0))
+
+ax.set_ylabel('Total Number of Syllables', fontsize=30)
+ax.set_xlabel('')
+ax.tick_params(labelsize=30, direction='out')
+# ax.set(xticklabels=[])
+plt.setp(ax.spines.values(), linewidth=2)
+ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x))))
+
+plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
+            "/YearAnalysis/" + sv + 'Year_beforeVSafter_' + yr + '.pdf', type='pdf', dpi=fig.dpi,
+            bbox_inches='tight',
+            transparent=True)
+# plt.show()
