@@ -25,14 +25,14 @@ var_diffs = ['DiffNumSylls', 'DiffSyllDur', 'DiffSilenceDur', 'DiffBoutDur']
 example_files = {}
 
 for region in ['east', 'west', 'south']:
-    median = pd.DataFrame(columns=['CatalogNo', 'DiffNumSylls', 'DiffSyllDur', 'DiffSilenceDur', 'DiffBoutDur'])
+    mean_df = pd.DataFrame(columns=['CatalogNo', 'DiffNumSylls', 'DiffSyllDur', 'DiffSilenceDur', 'DiffBoutDur'])
     for i in range(0, 4):
         region_data = data_ews.loc[data_ews['Region'] == region]
-        median['CatalogNo'] = region_data['CatalogNo']
-        median[var_diffs[i]] = abs(region_data[var_of_interest[i]] - region_data[var_of_interest[i]].mean())
-    median['DiffSum'] = median[var_diffs].sum(axis=1)
-    example_files.update({region: median.loc[median['DiffSum'].idxmin()]['CatalogNo']})
-    del median
+        mean_df['CatalogNo'] = region_data['CatalogNo']
+        mean_df[var_diffs[i]] = abs(region_data[var_of_interest[i]] - region_data[var_of_interest[i]].mean())
+    mean_df['DiffSum'] = mean_df[var_diffs].sum(axis=1)
+    example_files.update({region: mean_df.loc[mean_df['DiffSum'].idxmin()]['CatalogNo']})
+    del mean_df
 
 print(example_files)
 
