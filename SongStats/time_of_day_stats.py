@@ -23,7 +23,7 @@ col_to_skip = ['FromDatabase', 'Latitude', 'Longitude', 'RecordingDay', 'Recordi
                'RecordingTime']
 data_subset = log_song_data.drop(col_to_skip, axis=1)
 
-# load in time data --> before or after sunrise, twilights, and noon (only going to use civil twilight and noon)
+# load in time data --> before or after sunrise, twilights, and noon (only going to use sunrise and noon)
 data_path = "C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported\TimeAnalysis" \
             "\FinalData_LogTransformed_relativeToSunriseTwilightsNoon.csv"
 time_data = pd.DataFrame.from_csv(data_path, header=0, index_col=None)
@@ -59,7 +59,6 @@ with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalDa
 
     song_units = ['log(ms)', 'log(number)']
 
-    # box plot for duration of song bout, take exponential (and convert from ms to s for bout duration)
     for sv in ['BoutDuration_ms', 'NumSyllables']:
         before_sunrise = combined_df_unique.loc[combined_df_unique['Sunrise'] == 'before sunrise', sv]
         after_sunrise = combined_df_unique.loc[combined_df_unique['Sunrise'] == 'after sunrise', sv]
