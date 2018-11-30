@@ -125,6 +125,7 @@ fig0.savefig('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFina
 Plot scatter with Confidence Ellipses
 """
 
+# function adapted from https://scipython.com/book/chapter-7-matplotlib/examples/bmi-data-with-confidence-ellipses/
 def get_cov_ellipse(cov, centre, nstd, **kwargs):
     """
     Return a matplotlib Ellipse patch representing the covariance matrix
