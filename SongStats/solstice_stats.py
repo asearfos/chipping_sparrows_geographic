@@ -7,7 +7,7 @@ from mpl_toolkits.basemap import Basemap
 from scipy.stats import ranksums
 
 """
-Load data and organize/subset for testing changes over years
+Load data and organize/subset for testing changes between before and after the summer solstice
 """
 data_path = 'C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation' + \
             '/FinalDataframe_CombinedTables_withReChipper_thenWithReExportedAs44100Hz_LogTransformed.csv'
@@ -33,39 +33,6 @@ after_solstice = data_for_seasons.loc[(data_for_seasons['RecordingMonth'] > 6) &
 Histogram plot of the number of recordings per year
 """
 sns.distplot(data_for_seasons['RecordingMonth'], bins=12)
-plt.show()
-
-"""
-Location of data by before or after solstice 
-"""
-
-# Set the dimension of the figure
-my_dpi = 96
-fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
-
-#make the geographic background map
-m = Basemap(llcrnrlat=10, llcrnrlon=-140, urcrnrlat=65, urcrnrlon=-62)
-m.drawcoastlines(color='gray')
-m.drawcountries(color='k', linewidth=1)
-m.drawstates(color='gray')
-m.drawmapboundary(fill_color='w', color='none')
-
-#plot points at sampling locations
-m.scatter(before_solstice['Longitude'], before_solstice['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
-          edgecolor='black', linewidth=1)
-
-#plot points at sampling locations
-m.scatter(after_solstice['Longitude'], after_solstice['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
-          edgecolor='black', linewidth=1)
-
-plt.tight_layout()
-
-plt.savefig("C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported"
-            "/SeasonsAnalysis/Seasons_spreadOfBeforeAfterData.pdf", type='pdf', dpi=fig.dpi, bbox_inches='tight')
-
-# pdf.savefig(dpi=fig.dpi, orientation='landscape')
-# pdf.close()
-
 plt.show()
 
 """"
