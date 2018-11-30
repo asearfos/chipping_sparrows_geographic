@@ -1,10 +1,14 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 import numpy as np
 import seaborn as sns; sns.set()
 import csv
 from mpl_toolkits.basemap import Basemap
 from scipy.stats import ranksums
+from matplotlib.ticker import FuncFormatter
 
 """
 Load data and organize/subset for testing differences in song variables between two databases (ML and XC)
@@ -29,61 +33,54 @@ fromXC = data_for_source[data_for_source.FromDatabase == 'Xeno-Canto']
 fromML = data_for_source.loc[data_for_source['FromDatabase'].isin(['Macaulay Library', 'eBird'])].copy().reset_index()
 fromBorrorWanChun = data_for_source[data_for_source.FromDatabase == 'old']
 
-"""
-Location of data, colored by database
-"""
-
-# Set the dimension of the figure
-my_dpi = 96
-fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
-
-#make the geographic background map
-m = Basemap(llcrnrlat=10, llcrnrlon=-140, urcrnrlat=65, urcrnrlon=-62)
-m.drawcoastlines(color='gray')
-m.drawcountries(color='k', linewidth=1)
-m.drawstates(color='gray')
-m.drawmapboundary(fill_color='w', color='none')
-
-# #plot points at sampling locations
-m.scatter(fromXC['Longitude'], fromXC['Latitude'], latlon=True, label=None, zorder=10, c='#dfc27d',
-          edgecolor='black', linewidth=1)
-
-#plot points at sampling locations
-m.scatter(fromML['Longitude'], fromML['Latitude'], latlon=True, label=None, zorder=10, c='#8c510a',
-          edgecolor='black', linewidth=1)
-
-plt.tight_layout()
-
-plt.savefig("C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported"
-            "/DatabaseAnalysis/Database_geoSpreadOfData_XCLightMLeBirdDark.pdf", type='pdf', dpi=fig.dpi,
-            bbox_inches='tight')
-
-plt.show()
 
 """"
-Wilcoxon Ranksums
+Wilcoxon Ranksums for metadata 
 """
 
 metadata = ['Latitude', 'Longitude', 'RecordingYear', 'RecordingMonth', 'RecordingTime']
 
 with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported'
-          '/DatabaseAnalysis/database_WilcoxonRanksums.csv', 'wb') as file:
+          '/DatabaseAnalysis/PaperVersion/database_recProp_WilcoxonRanksums.csv', 'wb') as file:
     filewriter = csv.writer(file, delimiter=',')
-    filewriter.writerow(['Fixed Variable', 'XC vs MLeBird w', 'XC vs MLeBird p-value',
-                         'XC vs Old w', 'XC vs Old p-value',
-                         'Old vs MLeBird w', 'Old vs MLeBird p-value'])
+    filewriter.writerow(['Fixed Variable',
+                         'XC vs MLeBird p-value',
+                         'XC vs Old p-value',
+                         'Old vs MLeBird p-value'])
 
     for sv in metadata:
         xc = np.asarray(fromXC[sv])
         ml = np.asarray(fromML[sv])
         old = np.asarray(fromBorrorWanChun[sv])
-        filewriter.writerow([sv, ranksums(xc, ml)[0], ranksums(xc, ml)[1],
-                             ranksums(xc, old)[0], ranksums(xc, old)[1],
-                             ranksums(old, ml)[0], ranksums(old, ml)[1]])
+        filewriter.writerow([sv,
+                             ranksums(xc, ml)[1],
+                             ranksums(xc, old)[1],
+                             ranksums(old, ml)[1]])
+
+""""
+Wilcoxon Ranksums for 16 song variables
+"""
+
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported'
+          '/DatabaseAnalysis/PaperVersion/database_songProp_WilcoxonRanksums.csv', 'wb') as file:
+    filewriter = csv.writer(file, delimiter=',')
+    filewriter.writerow(['Song Variable',
+                         'XC vs MLeBird p-value',
+                         'XC vs Old p-value',
+                         'Old vs MLeBird p-value'])
+
+    for sv in data_for_source.columns[7:]:
+        xc = np.asarray(fromXC[sv])
+        ml = np.asarray(fromML[sv])
+        old = np.asarray(fromBorrorWanChun[sv])
+        filewriter.writerow([sv,
+                             ranksums(xc, ml)[1],
+                             ranksums(xc, old)[1],
+                             ranksums(old, ml)[1]])
 
 
 """
-Box Plot for database
+Box Plot for database and metadata
 """
 data_for_source.FromDatabase.replace(['eBird'], ['Macaulay Library'], inplace=True)
 
@@ -93,8 +90,7 @@ for sv in metadata:
     ax = sns.boxplot(x='FromDatabase', y=sv, data=data_for_source[['FromDatabase', sv]], color='None',
                      fliersize=0, width=0.5, linewidth=2, order=['old', 'Xeno-Canto', 'Macaulay Library'])
     ax = sns.stripplot(x='FromDatabase', y=sv, data=data_for_source[['FromDatabase', sv]],
-                       order=['old', 'Xeno-Canto', 'Macaulay Library'], size=7, jitter=True, lw=1, alpha=0.6,
-                       edgecolor=None, linewidth=0)
+                       order=['old', 'Xeno-Canto', 'Macaulay Library'], size=7, jitter=True, lw=1, alpha=0.6)
 
     # Make the boxplot fully transparent
     for patch in ax.artists:
@@ -108,7 +104,7 @@ for sv in metadata:
     plt.setp(ax.spines.values(), linewidth=2)
 
     plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
-                "/DatabaseAnalysis/" + sv + 'Database_OldXCML' + '.pdf', type='pdf', dpi=fig.dpi,
+                "/DatabaseAnalysis/PaperVersion/" + sv + 'Database_OldXCML' + '.pdf', type='pdf', dpi=fig.dpi,
                 bbox_inches='tight',
                 transparent=True)
     # plt.show()
