@@ -1,7 +1,7 @@
 import pandas as pd
 
 """
-Load data and organize/subset wilcoxon rank sums test and heatmaps overlayed on geographical maps 
+Load data song data
 """
 data_path = 'C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation' + \
             '/FinalDataframe_CombinedTables_withReChipper_thenWithReExportedAs44100Hz_LogTransformed.csv'
@@ -17,7 +17,7 @@ data_ews = data_subset.drop(data_subset[data_subset.Region == 'mid'].index).copy
 
 
 """
-Finding an example of East, West, South songs
+Finding an example of East, West, South songs (the ones closes to the average for specified song features of interest)
 """
 var_of_interest = ['NumSyllables', 'AvgSyllableDuration_ms', 'AvgSilenceDuration_ms', 'BoutDuration_ms']
 var_diffs = ['DiffNumSylls', 'DiffSyllDur', 'DiffSilenceDur', 'DiffBoutDur']
