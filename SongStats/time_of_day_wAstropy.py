@@ -12,6 +12,7 @@ from astropy.time import Time
 
 """
 Create csv file with each song file categorized as before or after sunrise, twilights, and noon. 
+Note, only ended up using, before sunrise, after sunrise and afternoon.
 """
 #read in data
 table = ascii.read("C:/Users/abiga\Box "
