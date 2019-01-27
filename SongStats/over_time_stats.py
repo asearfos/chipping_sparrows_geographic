@@ -50,6 +50,62 @@ after_1959 = data_for_year[data_for_year.RecordingYear >= 1959]
 # plt.show()
 #
 
+"""
+See if there is a difference in spread of year of recording between East West and South
+"""
+
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/YearRegion'
+          '/yearRegion_WilcoxonRanksums.csv', 'wb') as file:
+    filewriter = csv.writer(file, delimiter=',')
+    filewriter.writerow(['Song Variable', 'EW Wilcoxon p', 'EW p-value', 'ES Wilcoxon p', 'ES p-value', 'WS Wilcoxon p',
+                         'WS p-value'])
+
+    e = data_for_year.loc[data_for_year['Region'] == 'east', 'RecordingYear']
+    w = data_for_year.loc[data_for_year['Region'] == 'west', 'RecordingYear']
+    s = data_for_year.loc[data_for_year['Region'] == 'south', 'RecordingYear']
+
+    filewriter.writerow(['RecordingYear', ranksums(e, w)[0], ranksums(e, w)[1], ranksums(e, s)[0], ranksums(e, s)[1],
+                         ranksums(w, s)[0], ranksums(w, s)[1]])
+
+""""
+Box plot of results
+"""
+fig = plt.figure(figsize=(7, 11))
+my_dpi = 96
+sns.set(style='white',
+        rc={"font.style": "normal",
+            'lines.markersize': 2,
+            'axes.labelsize': 20,
+            'xtick.labelsize': 18,
+            'ytick.labelsize': 18,
+            })
+
+ax = sns.boxplot(x='Region', y='RecordingYear',
+                 data=data_for_year,
+                 color='None',
+                 fliersize=0, width=0.5,
+                 linewidth=2)
+ax = sns.stripplot(x='Region', y='RecordingYear',
+                   data=data_for_year,
+                   palette=['#f17300', '#1f78b4', '#33a02c'],
+                   size=7, jitter=True, lw=1, alpha=0.6)
+
+# Make the boxplot fully transparent
+for patch in ax.artists:
+    r, g, b, a = patch.get_facecolor()
+    patch.set_facecolor((r, g, b, 0))
+
+plt.setp(ax.spines.values(), linewidth=2)
+
+plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
+            "/YearRegion/yearRegionBoxPlot.pdf", type='pdf', dpi=fig.dpi,
+            bbox_inches='tight', transparent=True)
+# plt.cla()
+# plt.clf()
+plt.close()
+
+plt.show()
+quit()
 """"
 Wilcoxon Ranksums (all regions and for east and west separately --> Print out results to csv)
 """
