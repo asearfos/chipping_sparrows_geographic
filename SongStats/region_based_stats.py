@@ -444,6 +444,97 @@ downsampling_results.to_csv('C:/Users/abiga/Box '
                             '/region_WilcoxonRanksums_downsampled.csv')
 
 
+"""
+Downsampling by decade to check if we get the same results
+"""
+
+col_to_skip_notYear = ['CatalogNo', 'FromDatabase', 'ComparedStatus', 'RecordingDay', 'RecordingMonth', 'RecordingTime']
+data_subset_wYear = log_song_data_unique.drop(col_to_skip_notYear, axis=1)
+
+data_subset_wYear = data_subset_wYear.drop(data_subset_wYear[data_subset_wYear.Region == 'south'].index).\
+    copy().reset_index(drop=True)
+
+# use only east, west and south data for wilcoxon rank sums
+data_for_sampleYear = data_subset_wYear.drop(data_subset_wYear[data_subset_wYear.Region == 'mid'].index).copy(). \
+    reset_index(drop=True)
+
+pd.set_option("display.max_rows", 500)
+
+# just checking my work
+data_for_sampleYear['Decade'] = [str(d)[2]+'0' for d in data_for_sampleYear['RecordingYear']]
+
+num_per_decade = {'00': 25, '10': 78, '50': 7, '60': 15, '70': 13, '80': 8, '90': 30, 'n0': 0}
+region_decade_groups = data_for_sampleYear.groupby(['Region', 'Decade'])
+downsampled_df = pd.DataFrame()
+for name, group in data_for_sampleYear.groupby(['Region', 'Decade']):
+    sample_num = num_per_decade[name[1]]
+    downsampled_df = downsampled_df.append(group.sample(sample_num).reset_index(drop=True))
+print(downsampled_df.shape)
+
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/YearRegion'
+          '/yearRegionDownsampledByDecade_WilcoxonRanksums.csv', 'wb') as file:
+    filewriter = csv.writer(file, delimiter=',')
+    filewriter.writerow(['Song Variable', 'EW Wilcoxon p', 'EW p-value'])
+
+    e = downsampled_df.loc[downsampled_df['Region'] == 'east', 'RecordingYear']
+    w = downsampled_df.loc[downsampled_df['Region'] == 'west', 'RecordingYear']
+
+    filewriter.writerow(['RecordingYear', ranksums(e, w)[0], ranksums(e, w)[1]])
 
 
+fig = plt.figure(figsize=(7, 11))
+my_dpi = 96
+sns.set(style='white',
+        rc={"font.style": "normal",
+            'lines.markersize': 2,
+            'axes.labelsize': 20,
+            'xtick.labelsize': 18,
+            'ytick.labelsize': 18,
+            })
 
+ax = sns.boxplot(x='Region', y='RecordingYear',
+                 data=downsampled_df, order=['east', 'west'],
+                 color='None',
+                 fliersize=0, width=0.5,
+                 linewidth=2)
+ax = sns.stripplot(x='Region', y='RecordingYear',
+                   data=downsampled_df, order=['east', 'west'],
+                   palette=['#1f78b4', '#33a02c'],
+                   size=7, jitter=True, lw=1, alpha=0.6)
+
+# Make the boxplot fully transparent
+for patch in ax.artists:
+    r, g, b, a = patch.get_facecolor()
+    patch.set_facecolor((r, g, b, 0))
+
+plt.setp(ax.spines.values(), linewidth=2)
+
+plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported"
+            "/YearRegion/yearRegionBoxPlot_downsampledByDecade.pdf", type='pdf', dpi=fig.dpi,
+            bbox_inches='tight', transparent=True)
+# plt.cla()
+# plt.clf()
+plt.close()
+
+# plt.show()
+
+ranksums_EW = pd.DataFrame(index=range(1000), columns=[data_for_sampleYear.columns[4:]])
+
+for r in range(1000):
+
+    downsampled_df = pd.DataFrame()
+    for name, group in data_for_sampleYear.groupby(['Region', 'Decade']):
+        sample_num = num_per_decade[name[1]]
+        downsampled_df = downsampled_df.append(group.sample(sample_num).reset_index(drop=True))
+
+    for sv in downsampled_df.columns[3:]:
+        e = downsampled_df.loc[downsampled_df['Region'] == 'east', sv]
+        w = downsampled_df.loc[downsampled_df['Region'] == 'west', sv]
+
+        ranksums_EW.iloc[r][sv] = ranksums(e, w)[1]
+
+downsampling_results = pd.concat([ranksums_EW.max(axis=0), ranksums_EW.min(axis=0)],
+                                 axis=1, keys=['EW_max', 'EW_min'])
+downsampling_results.to_csv('C:/Users/abiga/Box '
+                            'Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/YearRegion'
+                            '/yearRegion_WilcoxonRanksums_downsampledByDecade.csv')
