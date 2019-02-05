@@ -11,6 +11,7 @@ import numpy.ma as ma
 import numpy as np
 import time
 from matplotlib.ticker import FuncFormatter
+import csv
 
 
 """
@@ -28,7 +29,7 @@ col_to_skip = ['CatalogNo', 'FromDatabase', 'ComparedStatus', 'RecordingDay', 'R
 data_for_corr = log_song_data_unique.drop(col_to_skip, axis=1)
 
 """
-Continuous Stats Test on 16 chosen song variables (pearsons and spearmans, only use spearmans for the paper)
+Continuous Stats Test on 16 chosen song variables
 """
 
 def corrfunc(x, y, **kws):
@@ -74,104 +75,117 @@ pdf.savefig(transparent=True)
 pdf.close()
 # plt.show()
 
-"""
-Main figure plots
-"""
+# make table of results
+print(data_for_corr.columns[0], data_for_corr.columns[1])
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/SupplementalCorr'
+          '/SongVar_corr_LatLong.csv', 'wb') as file:
+    filewriter = csv.writer(file, delimiter=',')
+    filewriter.writerow(['Song Variable', 'Lat rho', 'Lat p-value', 'Long rho', 'Long p-value'])
 
-song_variables = ['Mean Note Duration',
-                  'Mean Note Frequency Modulation',
-                  'Mean Note Frequency Trough',
-                  'Mean Note Frequency Peak',
-                  'Mean Inter-Syllable Silence Duration',
-                  'Mean Syllable Duration',
-                  'Mean Syllable Frequency Modulation',
-                  'Mean Syllable Frequency Trough',
-                  'Mean Syllable Frequency Peak',
-                  'Duration of Song Bout',
-                  'Mean Stereotypy of Repeated Syllables',
-                  'Number of Notes per Syllable',
-                  'Syllable Rate',
-                  'Total Number of Syllables',
-                  'Standard Deviation of Note Duration',
-                  'Standard Deviation of Note Frequency Modulation']
+    for song_var in data_for_corr.columns[3:]:
+        lat_rho, lat_p = stats.spearmanr(data_for_corr['Latitude'], data_for_corr[song_var], nan_policy='omit')
+        long_rho, long_p = stats.spearmanr(data_for_corr['Longitude'], data_for_corr[song_var], nan_policy='omit')
 
-# song_variables = ['Mean Inter-Syllable Silence Duration',
+        filewriter.writerow([song_var, lat_rho, lat_p, long_rho, long_p])
+
+# """
+# Main figure plots (did not use, just put table of correlations in the main text)
+# """
+#
+# song_variables = ['Mean Note Duration',
+#                   'Mean Note Frequency Modulation',
+#                   'Mean Note Frequency Trough',
+#                   'Mean Note Frequency Peak',
+#                   'Mean Inter-Syllable Silence Duration',
 #                   'Mean Syllable Duration',
 #                   'Mean Syllable Frequency Modulation',
+#                   'Mean Syllable Frequency Trough',
 #                   'Mean Syllable Frequency Peak',
 #                   'Duration of Song Bout',
+#                   'Mean Stereotypy of Repeated Syllables',
+#                   'Number of Notes per Syllable',
+#                   'Syllable Rate',
 #                   'Total Number of Syllables',
-#                   ]
-
-log_var = {7: 'ms', 8: 'ms', 16: 'number'}
-log_convert_var = {9: 'kHz', 11: 'kHz', 12: 'seconds'}
-# log_convert_inverse_var = {15: 'number/second'}
-# no_log = {13: '%'}
-# no_log_convert = {18: 'kHz'}
-
-# take e^x for y-axis
-for key, value in log_var.items():
-    fig = plt.figure(figsize=(7, 11))
-    my_dpi = 96
-    sns.set(style='white',
-            rc={"font.style": "normal",
-                'axes.labelsize': 20,
-                'xtick.labelsize': 18,
-                'ytick.labelsize': 18,
-                })
-
-    ax = sns.regplot(data=data_for_corr,
-                     x='Longitude',  # change for latitude or longitude
-                     y=data_for_corr.columns[key])
-
-    # Make the boxplot fully transparent
-    for patch in ax.artists:
-        r, g, b, a = patch.get_facecolor()
-        patch.set_facecolor((r, g, b, 0))
-
-    ax.set_ylabel(song_variables[key-3] + ' (' + value + ')')
-    ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x))))
-
-    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SupplementalCorr"
-                "/" + data_for_corr.columns[key] + '_noLogAxis_largerFont' + '.pdf',
-                type='pdf', dpi=fig.dpi,
-                bbox_inches='tight', transparent=True)
-    # plt.cla()
-    # plt.clf()
-    plt.close()
-
-    # plt.show()
-
-
-# take e^x for each variable and also convert from Hz to kHz or ms to seconds
-for key, value in log_convert_var.items():
-    fig = plt.figure(figsize=(7, 11))
-    my_dpi = 96
-    sns.set(style='white',
-            rc={"font.style": "normal",
-                'axes.labelsize': 20,
-                'xtick.labelsize': 18,
-                'ytick.labelsize': 18,
-                })
-
-    ax = sns.regplot(data=data_for_corr,
-                     x='Longitude',  # change for latitude or longitude
-                     y=data_for_corr.columns[key])
-
-    # Make the boxplot fully transparent
-    for patch in ax.artists:
-        r, g, b, a = patch.get_facecolor()
-        patch.set_facecolor((r, g, b, 0))
-
-    ax.set_ylabel(song_variables[key-3] + ' (' + value + ')')
-    ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x)/1000)))
-
-    plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SupplementalCorr"
-                "/" + data_for_corr.columns[key] + '_noLogAxis_largerFont' + '.pdf',
-                type='pdf', dpi=fig.dpi,
-                bbox_inches='tight', transparent=True)
-    # plt.cla()
-    # plt.clf()
-    plt.close()
-
-    # plt.show()
+#                   'Standard Deviation of Note Duration',
+#                   'Standard Deviation of Note Frequency Modulation']
+#
+# # song_variables = ['Mean Inter-Syllable Silence Duration',
+# #                   'Mean Syllable Duration',
+# #                   'Mean Syllable Frequency Modulation',
+# #                   'Mean Syllable Frequency Peak',
+# #                   'Duration of Song Bout',
+# #                   'Total Number of Syllables',
+# #                   ]
+#
+# log_var = {7: 'ms', 8: 'ms', 16: 'number'}
+# log_convert_var = {9: 'kHz', 11: 'kHz', 12: 'seconds'}
+# # log_convert_inverse_var = {15: 'number/second'}
+# # no_log = {13: '%'}
+# # no_log_convert = {18: 'kHz'}
+#
+# # take e^x for y-axis
+# for key, value in log_var.items():
+#     fig = plt.figure(figsize=(7, 11))
+#     my_dpi = 96
+#     sns.set(style='white',
+#             rc={"font.style": "normal",
+#                 'axes.labelsize': 20,
+#                 'xtick.labelsize': 18,
+#                 'ytick.labelsize': 18,
+#                 })
+#
+#     ax = sns.regplot(data=data_for_corr,
+#                      x='Longitude',  # change for latitude or longitude
+#                      y=data_for_corr.columns[key])
+#
+#     # Make the boxplot fully transparent
+#     for patch in ax.artists:
+#         r, g, b, a = patch.get_facecolor()
+#         patch.set_facecolor((r, g, b, 0))
+#
+#     ax.set_ylabel(song_variables[key-3] + ' (' + value + ')')
+#     ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x))))
+#
+#     plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SupplementalCorr"
+#                 "/" + data_for_corr.columns[key] + '_noLogAxis_largerFont' + '.pdf',
+#                 type='pdf', dpi=fig.dpi,
+#                 bbox_inches='tight', transparent=True)
+#     # plt.cla()
+#     # plt.clf()
+#     plt.close()
+#
+#     # plt.show()
+#
+#
+# # take e^x for each variable and also convert from Hz to kHz or ms to seconds
+# for key, value in log_convert_var.items():
+#     fig = plt.figure(figsize=(7, 11))
+#     my_dpi = 96
+#     sns.set(style='white',
+#             rc={"font.style": "normal",
+#                 'axes.labelsize': 20,
+#                 'xtick.labelsize': 18,
+#                 'ytick.labelsize': 18,
+#                 })
+#
+#     ax = sns.regplot(data=data_for_corr,
+#                      x='Longitude',  # change for latitude or longitude
+#                      y=data_for_corr.columns[key])
+#
+#     # Make the boxplot fully transparent
+#     for patch in ax.artists:
+#         r, g, b, a = patch.get_facecolor()
+#         patch.set_facecolor((r, g, b, 0))
+#
+#     ax.set_ylabel(song_variables[key-3] + ' (' + value + ')')
+#     ax.get_yaxis().set_major_formatter(FuncFormatter(lambda x, p: "%.1f" % (np.exp(x)/1000)))
+#
+#     plt.savefig("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported/SupplementalCorr"
+#                 "/" + data_for_corr.columns[key] + '_noLogAxis_largerFont' + '.pdf',
+#                 type='pdf', dpi=fig.dpi,
+#                 bbox_inches='tight', transparent=True)
+#     # plt.cla()
+#     # plt.clf()
+#     plt.close()
+#
+#     # plt.show()
