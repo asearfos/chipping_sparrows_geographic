@@ -51,25 +51,26 @@ after_1959 = data_for_year[data_for_year.RecordingYear >= 1959]
 #
 
 """
-See if there is a difference in spread of year of recording between East West and South
+See if there is a difference in spread of year of recording between East and West
 """
 
 with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/YearRegion'
           '/yearRegion_WilcoxonRanksums.csv', 'wb') as file:
     filewriter = csv.writer(file, delimiter=',')
-    filewriter.writerow(['Song Variable', 'EW Wilcoxon p', 'EW p-value', 'ES Wilcoxon p', 'ES p-value', 'WS Wilcoxon p',
-                         'WS p-value'])
+    filewriter.writerow(['Song Variable', 'EW Wilcoxon p', 'EW p-value'])
 
     e = data_for_year.loc[data_for_year['Region'] == 'east', 'RecordingYear']
     w = data_for_year.loc[data_for_year['Region'] == 'west', 'RecordingYear']
-    s = data_for_year.loc[data_for_year['Region'] == 'south', 'RecordingYear']
 
-    filewriter.writerow(['RecordingYear', ranksums(e, w)[0], ranksums(e, w)[1], ranksums(e, s)[0], ranksums(e, s)[1],
-                         ranksums(w, s)[0], ranksums(w, s)[1]])
+    filewriter.writerow(['RecordingYear', ranksums(e, w)[0], ranksums(e, w)[1]])
 
 """"
 Box plot of results
 """
+
+data_for_year = data_for_year.drop(data_for_year[data_for_year.Region == 'mid'].index).copy().reset_index(drop=True)
+data_for_year = data_for_year.drop(data_for_year[data_for_year.Region == 'south'].index).copy().reset_index(drop=True)
+
 fig = plt.figure(figsize=(7, 11))
 my_dpi = 96
 sns.set(style='white',
@@ -81,13 +82,13 @@ sns.set(style='white',
             })
 
 ax = sns.boxplot(x='Region', y='RecordingYear',
-                 data=data_for_year,
+                 data=data_for_year, order=['east', 'west'],
                  color='None',
                  fliersize=0, width=0.5,
                  linewidth=2)
 ax = sns.stripplot(x='Region', y='RecordingYear',
-                   data=data_for_year,
-                   palette=['#f17300', '#1f78b4', '#33a02c'],
+                   data=data_for_year, order=['east', 'west'],
+                   palette=['#1f78b4', '#33a02c'],
                    size=7, jitter=True, lw=1, alpha=0.6)
 
 # Make the boxplot fully transparent
