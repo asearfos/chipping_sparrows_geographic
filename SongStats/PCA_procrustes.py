@@ -59,7 +59,18 @@ principalDf['PC1'] = -1*principalDf['PC1']
 finalDf = pd.concat([data_for_PCA[['Region', 'Latitude', 'Longitude']], principalDf], axis=1)
 print(pca.explained_variance_ratio_)
 
+# output the loadings
+col = data_for_PCA.drop(['Region', 'Latitude', 'Longitude',
+                         'RecordingYear', 'RecordingTime'], axis=1).columns
+loadings = pd.DataFrame(pca.components_, columns=col,
+                   index=['PC1', 'PC2'])
+print(loadings.T)
+loadings.T.to_csv('C:/Users/abiga/Box '
+               'Sync/Abigail_Nicole/ChippiesProject'
+               '/StatsOfFinalData_withReChipperReExported/PCA_Procrustes'
+               '/PCA_loadings.csv')
 
+quit()
 """
 PC1 and PC2 correlation to song variables
 """
