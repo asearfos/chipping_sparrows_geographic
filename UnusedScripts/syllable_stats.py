@@ -159,6 +159,10 @@ summary_table = summary_table.reindex_axis(['NumberOfRecordings', 'EarliestYear'
 # summary_table.to_csv('C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\StatsOfFinalData_withReChipperReExported'
 #                      '/SyllableAnalysis/SyllableClusterSummaryTable.csv')
 
+""""
+Everything above this point was used in the chippies geography paper
+"""
+
 ######PLOT 3
 # use this information to create a histogram of the lifespan of the syllable clusters (with hues for quartiles of
 # most to least prevalent syllables)
