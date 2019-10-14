@@ -11,6 +11,11 @@ Haplo_Locations = pd.read_table("C:/Users/abiga\Box "
 
 Haplo_Locations_wFreq = Haplo_Locations.groupby(['Latitude', 'Longitude']).size().reset_index(name='NumAtLocation')
 print('mtDNA \n', Haplo_Locations_wFreq)
+Haplo_Locations_wFreq.to_csv("C:/Users/abiga\Box Sync\Abigail_Nicole"
+                            "\ChippiesProject\GeneticData"
+                            "\Mila_ControlRegionSeq"
+                            "\Mila_HaplotypeToLocation_correctedCA_allSamples_byCount.txt",
+                             index=False)
 
 #load in mitochondrial control region data to get locations and number of samples at each location
 COI_Locations = pd.read_table("C:/Users/abiga\Box "
@@ -19,6 +24,13 @@ COI_Locations = pd.read_table("C:/Users/abiga\Box "
 
 COI_Locations_wFreq = COI_Locations.groupby(['Latitude', 'Longitude']).size().reset_index(name='NumAtLocation')
 print('COI \n', COI_Locations_wFreq)
+COI_Locations_wFreq.to_csv("C:/Users/abiga\Box Sync\Abigail_Nicole"
+                            "\ChippiesProject\GeneticData"
+                            "\ChippingSparrow_Barcodes_2017"
+                            "\ChippingSparrow_BarcodesToLocations_byCount.txt",
+                             index=False)
+
+quit()
 
 # Set the dimension of the figure
 my_dpi = 96
