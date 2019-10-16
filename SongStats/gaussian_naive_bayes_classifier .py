@@ -2,19 +2,16 @@ import numpy as np
 import pandas as pd
 import csv
 import itertools
-import sklearn
-from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
 import seaborn as sns; sns.set()
-from mpl_toolkits.basemap import Basemap
 
 # import dataset
 data_path = 'C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject\FinalDataCompilation' + \
-            '/FinalDataframe_CombinedTables_withReChipper_thenWithReExportedAs44100Hz_LogTransformed.csv'
+            '/AnimalBehaviour_SupplementalDataTable2_addedMid.csv'
+
 log_song_data = pd.DataFrame.from_csv(data_path, header=0, index_col=None)
 
 log_song_data_unique = log_song_data.loc[log_song_data['ComparedStatus'].isin(['unique', 'use'])].copy().reset_index(
@@ -25,9 +22,8 @@ locations_eastwest = log_song_data_unique.drop(log_song_data_unique.loc[log_song
 locations_mid = log_song_data_unique.loc[log_song_data_unique['Region'].isin(['mid'])].copy().reset_index(drop=True)[
                 ['Latitude', 'Longitude']]
 
-col_to_skip = ['CatalogNo', 'FromDatabase', 'ComparedStatus', 'RecordingDay', 'RecordingMonth', 'RecordingYear',
-               'RecordingTime',
-               'Latitude', 'Longitude']
+col_to_skip = ['CatalogNo', 'FromDatabase', 'ComparedStatus', 'RecordingDay',
+               'RecordingMonth', 'RecordingYear', 'RecordingTime']
 data_subset = log_song_data_unique.drop(col_to_skip, axis=1)
 
 # get mid data separately
@@ -36,6 +32,8 @@ data_mid = data_subset.loc[data_subset['Region'].isin(['mid'])].copy().reset_ind
 # use only east and west data
 data = data_subset.drop(data_subset.loc[data_subset['Region'].isin(['mid', 'south'])].index).copy().reset_index(
     drop=True)
+
+data_rounded = data.round({'Latitude': 2, 'Longitude': 2})
 
 '''
 set up labels --> the categories we want to be able to sort the data into and their actual category
@@ -47,10 +45,13 @@ labels = pd.get_dummies(data.Region, drop_first=True).values.ravel()
 all 16 song variables
 '''
 # organizing data into sets
-feature_names = data.columns[1:].values
-features = data.loc[:, data.columns != 'Region'].values
+feature_names = data.columns[3:].values
+features = data.loc[:, data.columns[3:]].values
 
-train, test, train_labels, test_labels = train_test_split(features, labels, test_size=0.33, random_state=42)
+train, test, train_labels, test_labels = train_test_split(features,
+                                                          labels,
+                                                          test_size=0.33,
+                                                          random_state=42)
 
 # initialize our classifier
 gnb = GaussianNB()
@@ -64,7 +65,10 @@ preds = gnb.predict(test)
 # evaluate accuracy
 prediction = {'all 16 variables': accuracy_score(test_labels, preds)}
 print(accuracy_score(test_labels, preds))
-with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/MachineLearningClassifier'
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject'
+          '/StatsOfFinalData_withReChipperReExported'
+          '/AnimalBehaviourRevisions'
+          '/MachineLearningClassifier'
           '/allVariablesTogether.csv', 'wb') as csv_file:
     writer = csv.writer(csv_file)
     for key, value in sorted(prediction.items(), key=lambda kv: kv[1], reverse=True):
@@ -76,12 +80,15 @@ all individual variables
 '''
 # organizing data into sets
 predictions = dict()
-for i in data.columns[1:].values:
+for i in data.columns[3:].values:
 
     feature_name = i
     feature = data.loc[:, data.columns == i].values
 
-    train, test, train_labels, test_labels = train_test_split(feature, labels, test_size=0.33, random_state=42)
+    train, test, train_labels, test_labels = train_test_split(feature,
+                                                              labels,
+                                                              test_size=0.33,
+                                                              random_state=42)
 
     # initialize our classifier
     gnb = GaussianNB()
@@ -96,7 +103,10 @@ for i in data.columns[1:].values:
     predictions[feature_name] = accuracy_score(test_labels, preds)
     # print(feature_name, accuracy_score(test_labels, preds))
 print(sorted(predictions.items(), key=lambda kv: kv[1], reverse=True))
-with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/MachineLearningClassifier'
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject'
+          '/StatsOfFinalData_withReChipperReExported'
+          '/AnimalBehaviourRevisions'
+          '/MachineLearningClassifier'
           '/allIndividuals.csv', 'wb') as csv_file:
     writer = csv.writer(csv_file)
     for key, value in sorted(predictions.items(), key=lambda kv: kv[1], reverse=True):
@@ -107,13 +117,16 @@ all combinations of 2 of the 16 song variables
 '''
 # organizing data into sets
 predictions = dict()
-combinations = list(itertools.combinations(data.columns[1:].values, 2))
+combinations = list(itertools.combinations(data.columns[3:].values, 2))
 for i in combinations:
 
     two_feature_names = np.asarray(i)
     two_features = data.loc[:, two_feature_names].values
 
-    train, test, train_labels, test_labels = train_test_split(two_features, labels, test_size=0.33, random_state=42)
+    train, test, train_labels, test_labels = train_test_split(two_features,
+                                                              labels,
+                                                              test_size=0.33,
+                                                              random_state=42)
 
     # initialize our classifier
     gnb = GaussianNB()
@@ -129,7 +142,10 @@ for i in combinations:
     # print(feature_name, accuracy_score(test_labels, preds))
 print(sorted(predictions.items(), key=lambda kv: kv[1], reverse=True))
 
-with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/MachineLearningClassifier'
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject'
+          '/StatsOfFinalData_withReChipperReExported'
+          '/AnimalBehaviourRevisions'
+          '/MachineLearningClassifier'
           '/combosOfTwo.csv', 'wb') as csv_file:
     writer = csv.writer(csv_file)
     for key, value in sorted(predictions.items(), key=lambda kv: kv[1], reverse=True):
@@ -140,13 +156,16 @@ all combinations of 3 of the 16 song variables
 '''
 # organizing data into sets
 predictions = dict()
-combinations = list(itertools.combinations(data.columns[1:].values, 3))
+combinations = list(itertools.combinations(data.columns[3:].values, 3))
 for i in combinations:
 
     three_feature_names = np.asarray(i)
     three_features = data.loc[:, three_feature_names].values
 
-    train, test, train_labels, test_labels = train_test_split(three_features, labels, test_size=0.33, random_state=42)
+    train, test, train_labels, test_labels = train_test_split(three_features,
+                                                              labels,
+                                                              test_size=0.33,
+                                                              random_state=42)
 
     # initialize our classifier
     gnb = GaussianNB()
@@ -162,89 +181,192 @@ for i in combinations:
     # print(feature_name, accuracy_score(test_labels, preds))
 print(sorted(predictions.items(), key=lambda kv: kv[1], reverse=True))
 
-with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject/StatsOfFinalData_withReChipperReExported/MachineLearningClassifier'
+with open('C:/Users/abiga/Box Sync/Abigail_Nicole/ChippiesProject'
+          '/StatsOfFinalData_withReChipperReExported'
+          '/AnimalBehaviourRevisions'
+          '/MachineLearningClassifier'
           '/combosOfThree.csv', 'wb') as csv_file:
     writer = csv.writer(csv_file)
     for key, value in sorted(predictions.items(), key=lambda kv: kv[1], reverse=True):
        writer.writerow([key, value])
 
 """
-Use best classifier for classifying the mid region
+Classifiers using downsampled data by location
 """
-# choose features to train the dataset
-three_feature_names = ['AvgNoteDuration_ms', 'AvgSilenceDuration_ms', 'AvgSyllsUpperFreq_Hz']
-three_features = data.loc[:, three_feature_names].values
+# load in list of random seeds
+seed_list = np.genfromtxt('C:/Users/abiga\Box '
+                          'Sync\Abigail_Nicole\ChippiesProject'
+                          '\FinalDataCompilation\RandomSeeds.csv',
+                          delimiter=',', dtype='int')
 
-# organizing data into sets
-train, test, train_labels, test_labels = train_test_split(three_features, labels, test_size=0.33, random_state=42)
+all_variables = pd.DataFrame(index=range(1000),
+                             columns=['all_16_variables'])
 
-#shuffle the lat/long of the east/west files the same way as the train_test_split does
-lat_shuffle = shuffle(np.asarray(locations_eastwest['Latitude']), random_state=42)
-long_shuffle = shuffle(np.asarray(locations_eastwest['Longitude']), random_state=42)
+all_individual = pd.DataFrame(index=range(1000),
+                              columns=[data_rounded.columns[3:]])
 
-print('len of test', len(test))
-print('len of train', len(train))
+combinations_2 = list(itertools.combinations(data_rounded.columns[
+                                             3:].values, 2))
+combosOfTwo = pd.DataFrame(index=range(1000),
+                           columns=[combinations_2])
 
-#get the lat/long of the test and train set
-lat_test = lat_shuffle[0:len(test)]
-long_test = long_shuffle[0:len(test)]
+combinations_3 = list(itertools.combinations(data_rounded.columns[
+                                             3:].values, 3))
+combosOfThree = pd.DataFrame(index=range(1000),
+                             columns=[combinations_3])
 
-# initialize our classifier
-gnb = GaussianNB()
 
-# train our classifier
-model = gnb.fit(train, train_labels)
+for r, seed in zip(range(1000), seed_list):
+    sample = data_rounded.groupby(['Latitude', 'Longitude']).apply(
+        lambda x: x.sample(1, random_state=seed)).reset_index(drop=True)
 
-# make predictions on east/west as well as on the mid
-preds = gnb.predict(test)
-preds_mid = gnb.predict(data_mid.loc[:, three_feature_names].values)
+    '''
+    set up labels --> the categories we want to be able to sort the data 
+    into and their actual category
+    '''
+    label_names = sample.Region.unique()
+    labels = pd.get_dummies(sample.Region, drop_first=True).values.ravel()
 
-# geographic plot of predictions
+    '''
+    all 16 song variables
+    '''
+    # organizing data into sets
+    feature_names = sample.columns[3:].values
+    features = sample.loc[:, sample.columns[3:]].values
 
-# Set the dimension of the figure
-my_dpi = 96
-fig = plt.figure(figsize=(2600 / my_dpi, 1800 / my_dpi), dpi=my_dpi, frameon=False)
+    train, test, train_labels, test_labels = train_test_split(
+        features, labels, test_size=0.33, random_state=42)
 
-#make the geographic background map
-m = Basemap(llcrnrlat=8, llcrnrlon=-169, urcrnrlat=72, urcrnrlon=-52)
-m.drawcoastlines(color='k', linewidth=1.5)
-m.drawcountries(color='k', linewidth=1.5)
-m.drawstates(color='gray')
-m.drawmapboundary(fill_color='w', color='none')
+    # initialize our classifier
+    gnb = GaussianNB()
 
-# set east and west colors based on prediction
-preds_colors = preds.tolist()
-for i, item in enumerate(preds_colors):
-    if item == 0:
-        preds_colors[i] = '#1f78b4'
-    if item == 1:
-        preds_colors[i] = '#33a02c'
+    # train our classifier
+    model = gnb.fit(train, train_labels)
 
-preds_mid_colors = preds_mid.tolist()
-for i, item in enumerate(preds_mid_colors):
-    if item == 0:
-        preds_mid_colors[i] = '#1f78b4'
-    if item == 1:
-        preds_mid_colors[i] = '#33a02c'
+    # make predictions
+    preds = gnb.predict(test)
 
-#plot points at sampling locations
-m.scatter(long_test, lat_test, latlon=True,
-          s=100, label=None, zorder=10, c=tuple(preds_colors), edgecolor='black', linewidth=1)
+    # evaluate accuracy
+    all_variables.iloc[r]['all_16_variables'] = accuracy_score(test_labels,
+                                                               preds)
 
-#plot points at sampling locations
-m.scatter(locations_mid['Longitude'], locations_mid['Latitude'], latlon=True,
-          s=100, label=None, zorder=10, c=tuple(preds_mid_colors), edgecolor='black', linewidth=1)
+    '''
+    all individual variables
+    '''
+    # organizing data into sets
+    for i in sample.columns[3:].values:
 
-plt.tight_layout()
+        feature_name = i
+        feature = sample.loc[:, sample.columns == i].values
 
-pdf = PdfPages("C:/Users/abiga\Box Sync\Abigail_Nicole\ChippiesProject/StatsOfFinalData_withReChipperReExported/MachineLearningClassifier/" +
-               'BestPrediction_geoPlot' + '.pdf')
+        train, test, train_labels, test_labels = train_test_split(
+            feature, labels, test_size=0.33, random_state=42)
 
-pdf.savefig(dpi=fig.dpi, orientation='landscape')
-pdf.close()
+        # initialize our classifier
+        gnb = GaussianNB()
 
-plt.show()
+        # train our classifier
+        model = gnb.fit(train, train_labels)
 
-# evaluate accuracy
-prediction = accuracy_score(test_labels, preds)
-print(prediction)
+        # make predictions
+        preds = gnb.predict(test)
+
+        # evaluate accuracy
+        all_individual.iloc[r][feature_name] = accuracy_score(test_labels,
+                                                              preds)
+    '''
+    all combinations of 2 of the 16 song variables
+    '''
+    # organizing data into sets
+    for i in combinations_2:
+
+        two_feature_names = np.asarray(i)
+        two_features = sample.loc[:, two_feature_names].values
+
+        train, test, train_labels, test_labels = train_test_split(
+            two_features, labels, test_size=0.33, random_state=42)
+
+        # initialize our classifier
+        gnb = GaussianNB()
+
+        # train our classifier
+        model = gnb.fit(train, train_labels)
+
+        # make predictions
+        preds = gnb.predict(test)
+
+        # evaluate accuracy
+        combosOfTwo.iloc[r][i] = accuracy_score(test_labels, preds)
+
+    '''
+    all combinations of 3 of the 16 song variables
+    '''
+    # organizing data into sets
+    for i in combinations_3:
+
+        three_feature_names = np.asarray(i)
+        three_features = sample.loc[:, three_feature_names].values
+
+        train, test, train_labels, test_labels = train_test_split(
+            three_features, labels, test_size=0.33, random_state=42)
+
+        # initialize our classifier
+        gnb = GaussianNB()
+
+        # train our classifier
+        model = gnb.fit(train, train_labels)
+
+        # make predictions
+        preds = gnb.predict(test)
+
+        # evaluate accuracy
+        combosOfThree.iloc[r][i] = accuracy_score(test_labels, preds)
+
+downsampling_all = pd.concat([all_variables.max(axis=0),
+                              all_variables.min(axis=0)],
+                             axis=1,
+                             keys=['all_variables_max',
+                                   'all_variables_min'])
+downsampling_all.to_csv('C:/Users/abiga/Box '
+                        'Sync/Abigail_Nicole/ChippiesProject'
+                        '/StatsOfFinalData_withReChipperReExported'
+                        '/AnimalBehaviourRevisions'
+                        '/MachineLearningClassifier'
+                        '/allVariablesTogether_downsampled.csv')
+
+downsampling_individual = pd.concat([all_individual.max(axis=0),
+                                     all_individual.min(axis=0)],
+                                    axis=1,
+                                    keys=['all_individuals_max',
+                                          'all_individuals_min'])
+downsampling_individual.to_csv('C:/Users/abiga/Box '
+                               'Sync/Abigail_Nicole/ChippiesProject'
+                               '/StatsOfFinalData_withReChipperReExported'
+                               '/AnimalBehaviourRevisions'
+                               '/MachineLearningClassifier'
+                               '/allIndividuals_downsampled.csv')
+
+downsampling_combosTwo = pd.concat([combosOfTwo.max(axis=0),
+                                    combosOfTwo.min(axis=0)],
+                                   axis=1,
+                                   keys=['combosTwo_max',
+                                         'combosTwo_min'])
+downsampling_combosTwo.to_csv('C:/Users/abiga/Box '
+                              'Sync/Abigail_Nicole/ChippiesProject'
+                              '/StatsOfFinalData_withReChipperReExported'
+                              '/AnimalBehaviourRevisions'
+                              '/MachineLearningClassifier'
+                              '/combosOfTwo_downsampled.csv')
+
+downsampling_combosThree = pd.concat([combosOfThree.max(axis=0),
+                                      combosOfThree.min(axis=0)],
+                                     axis=1,
+                                     keys=['combosThree_max',
+                                           'combosThree_min'])
+downsampling_combosThree.to_csv('C:/Users/abiga/Box '
+                                'Sync/Abigail_Nicole/ChippiesProject'
+                                '/StatsOfFinalData_withReChipperReExported'
+                                '/AnimalBehaviourRevisions'
+                                '/MachineLearningClassifier'
+                                '/combosOfThree_downsampled.csv')
+
