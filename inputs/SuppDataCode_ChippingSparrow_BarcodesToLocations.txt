@@ -1,0 +1,22 @@
+Barcode Numbers	Latitude	Longitude	Country	State
+BABNA041-06	44.16	-66.22	Canada	Nova Scotia
+BABNA042-06	44.16	-66.22	Canada	Nova Scotia
+BABNA355-07	60.23	-132.91	Canada	Yukon Territory
+BABNA356-07	60.23	-132.91	Canada	Yukon Territory
+BABNA357-07	60.23	-132.91	Canada	Yukon Territory
+BABNA760-07	55.389	-123.2	Canada	British Columbia
+BABNA836-08	48.317	-123.533	Canada	British Columbia
+BABNA850-08	48.317	-123.533	Canada	British Columbia
+BABNA851-08	48.317	-123.533	Canada	British Columbia
+BOTW101-04	38.502	-79.616	United States	Virginia
+BROMB340-06	49.47	-93.4	Canada	Ontario
+BROMB341-06	49.47	-93.4	Canada	Ontario
+BSBNA030-05	35.584	-83.0736	United States	North Carolina
+GBIR3069-12			United States	
+KBNA039-04	42.856	-79.552	Canada	Ontario
+KBNA040-04	42.856	-79.552	Canada	Ontario
+KBNA158-04	42.856	-79.552	Canada	Ontario
+KBNA295-04	45.08	-67.05	Canada	New Brunswick
+KBNA343-04	42.586	-80.399	Canada	Ontario
+TZBNA026-03	31.381	-100.606	United States	Texas
+TZBNA071-03	45.6333	-80.0833	Canada	Ontario
