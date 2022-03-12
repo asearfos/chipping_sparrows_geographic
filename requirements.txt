@@ -20,7 +20,7 @@ olefile==0.45.1
 packaging==17.1
 pandas==0.20.3
 partd==0.3.8
-Pillow==5.0.0
+Pillow==9.0.1
 psutil==5.4.3
 PyMySQL==0.8.0
 pyparsing==2.2.0
