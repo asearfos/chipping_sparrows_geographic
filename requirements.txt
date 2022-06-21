@@ -15,7 +15,7 @@ MarkupSafe==1.0
 matplotlib==2.2.0
 msgpack-python==0.5.5
 networkx==2.1
-numpy==1.14.1
+numpy==1.22.0
 olefile==0.45.1
 packaging==17.1
 pandas==0.20.3
